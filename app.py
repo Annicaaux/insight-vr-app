@@ -5,15 +5,23 @@ import streamlit as st
 st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
 st.markdown("""
     <style>
-    /* Hintergrundfarbe für die ganze App */
-    body {
-        background-color: #FFF8DC !important;
+    /* Hintergrundfarbe für den Hauptbereich */
+    .main {
+        background-color: #FFF8DC;
+        padding: 2rem;
+        border-radius: 10px;
     }
 
+    /* Streamlit-Sidebar und Body */
+    html, body, [data-testid="stAppViewContainer"] {
+        background-color: #FFF8DC;
+    }
+
+    /* Titel */
     .title {
         text-align: center;
         font-size: 2.5em;
-        color: #20B2AA !important;
+        color: #20B2AA;
         margin-bottom: 10px;
     }
 
@@ -24,7 +32,6 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* Button-Design */
     .stButton button {
         background-color: #e0cfee;
         color: #4a148c;
@@ -41,13 +48,8 @@ st.markdown("""
         color: black;
         transform: scale(1.03);
     }
-
-    .stAlert {
-        border-radius: 10px;
-    }
     </style>
 """, unsafe_allow_html=True)
-
 # 🌈 Farbdesign: Hintergrund + Titel
 st.markdown("""
     <style>
