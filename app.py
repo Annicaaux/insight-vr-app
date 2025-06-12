@@ -5,13 +5,13 @@ import random
 # App-Konfiguration
 st.set_page_config(page_title="Traumatisierender Taschen-Therapeut", page_icon="🎧", layout="centered")
 
-# 🌈 Stildefinition
+# 🌈 Farbdesign
 st.markdown("""
     <style>
     html, body, [data-testid="stAppViewContainer"] {
         font-family: 'Segoe UI', sans-serif;
         background-color: #FFF8DC;
-        color: #000000;
+        color: #2c2c2c;
     }
     .title {
         text-align: center;
@@ -46,42 +46,48 @@ st.markdown("""
         border-radius: 10px;
         padding: 10px;
     }
-    .continue-button {
+    .round-button {
         display: flex;
         justify-content: center;
-        margin-top: 2em;
+        margin-top: 20px;
     }
-    .continue-button button {
-        background-color: #ff9999 !important;
-        color: black !important;
-        border-radius: 50px !important;
-        font-weight: bold;
+    .round-button button {
+        background-color: #f8c8c8;
+        border: none;
+        color: black;
+        padding: 12px 24px;
+        border-radius: 30px;
         font-size: 1.1em;
-        padding: 10px 24px;
+        cursor: pointer;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Überschrift
+# Titelbereich
 st.markdown('<div class="title">Traumatisierender Taschen-Therapeut</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Bitte scanne deine Versichertenkarte, um zu starten</div>', unsafe_allow_html=True)
 
-# Versicherungswahl
+# Initialisierung der Session-States
+if "insurance" not in st.session_state:
+    st.session_state["insurance"] = None
+if "loading_done" not in st.session_state:
+    st.session_state["loading_done"] = False
+if "show_button" not in st.session_state:
+    st.session_state["show_button"] = False
+if "show_result" not in st.session_state:
+    st.session_state["show_result"] = False
+
+# Auswahl der Versicherung
 def show_insurance_choice():
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🪪 Gesetzlich versichert", use_container_width=True):
             st.session_state["insurance"] = "GKV"
-            st.session_state["show_loading"] = True
-            st.session_state["show_button"] = False
-            st.session_state["show_result"] = False
     with col2:
         if st.button("💳 Privat versichert", use_container_width=True):
             st.session_state["insurance"] = "PKV"
-            st.session_state["show_loading"] = True
-            st.session_state["show_button"] = False
-            st.session_state["show_result"] = False
 
+# Ladeanimation nach Auswahl
 def show_loading_animation():
     st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_container_width=True)
     ladeplatz = st.empty()
@@ -89,50 +95,40 @@ def show_loading_animation():
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
         "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
         "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
-        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
-        "🕳️ Du fällst in die Warteliste… bitte lächeln!"
+        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung."
     ]
     for botschaft in ladebotschaften:
-        ladeplatz.markdown(f'<div style="text-align: center;">{botschaft}</div>', unsafe_allow_html=True)
-        time.sleep(2)
-
+        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
+        time.sleep(2.5)
     st.session_state["show_button"] = True
 
-def show_continue_button():
-    st.markdown('<div class="continue-button">', unsafe_allow_html=True)
-    if st.button("B2.01 besuchen"):
-        st.session_state["show_result"] = True
-        st.session_state["show_loading"] = False
-    st.markdown('</div>', unsafe_allow_html=True)
-
+# Ergebnisanzeige
 def show_result():
     status = st.session_state["insurance"]
     ticket_number = f"{status}-{random.randint(100000, 999999)}"
-
     if status == "GKV":
         st.subheader("🪪 Willkommen, Pöbel!")
         st.markdown(f"""
-            <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px;">
-            <b>🎟️ Ticketnummer: {ticket_number}</b><br><br>
-            Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
-            Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
-            </div>
+        <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
+        <b>🎟️ Ticketnummer: {ticket_number}</b><br><br>
+        Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
+        Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
+        </div>
         """, unsafe_allow_html=True)
         st.caption("Tipp: Wenn du beim Scannen deiner Karte weinst, zählt das bereits als Erstgespräch.")
-    elif status == "PKV":
+    else:
         st.subheader("💎 Willkommen, oberer Mittelschichtler!")
         st.markdown(f"""
-            <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px;">
-            <b>🎟️ Ticketnummer: {ticket_number}</b><br><br>
-            Du hast jetzt Zugang zu:<br>
-            – Einzeltherapie mit Designer-Sitzsäcken<br>
-            – funktionierender McDonalds Eismaschine<br>
-            – Notfalltermin innerhalb von 24 Sekunden<br><br>
-            Wahlweise mit vergoldeter Klangschale oder Ego-Streicheln.
-            </div>
+        <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
+        <b>🎟️ Ticketnummer: {ticket_number}</b><br><br>
+        Du hast jetzt Zugang zu:<br>
+        – Einzeltherapie mit Designer-Sitzsäcken<br>
+        – funktionierender McDonalds Eismaschine<br>
+        – Notfalltermin innerhalb von 24 Sekunden<br><br>
+        Wahlweise mit vergoldeter Klangschale oder Ego-Streicheln.
+        </div>
         """, unsafe_allow_html=True)
         st.caption("Fun Fact: Dein Therapeut hat deinen Lebenslauf gegoogelt – und dich sofort auf LinkedIn verlinkt.")
-
     st.divider()
     st.markdown("### Was brauchst du heute?")
     choice = st.selectbox("Modul auswählen", [
@@ -150,12 +146,15 @@ def show_result():
     else:
         st.markdown(f"Du hast **{choice}** gewählt. Dieses Modul wird bald freigeschaltet.")
 
-# Ablaufsteuerung
-if "insurance" not in st.session_state:
+# Steuerung
+if st.session_state["insurance"] is None:
     show_insurance_choice()
-elif st.session_state.get("show_loading", False) and not st.session_state.get("show_button", False):
+elif not st.session_state["loading_done"]:
     show_loading_animation()
-elif st.session_state.get("show_button", False) and not st.session_state.get("show_result", False):
-    show_continue_button()
-elif st.session_state.get("show_result", False):
+    st.session_state["loading_done"] = True
+elif st.session_state["show_button"] and not st.session_state["show_result"]:
+    st.markdown('<div class="round-button"><button onclick="window.location.reload()">B2.01 besuchen</button></div>', unsafe_allow_html=True)
+    if st.button("B2.01 besuchen"):
+        st.session_state["show_result"] = True
+else:
     show_result()
