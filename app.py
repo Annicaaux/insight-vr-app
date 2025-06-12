@@ -65,35 +65,21 @@ def show_insurance_choice():
             st.session_state["insurance"] = "PKV"
             st.session_state["scanned"] = False
 
-# Lade-Animation mit dynamischem Text
+# Ladeanimation
 def show_loading_animation():
-    image_container = st.empty()
-    text_container = st.empty()
-
-    image_container.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
-
+    st.image("glockenkurve_ladeanimation.gif", caption="", use_column_width=True)
+    ladeplatz = st.empty()
     ladebotschaften = [
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
         "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
         "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
-        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
-        "🕳️ Du fällst in die Warteliste… bitte lächeln!"
+        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung."
     ]
-
-    for i in range(4):  # 4 Schleifen à 2.5 Sekunden = 10 Sekunden
-        text_container.markdown(
-            f'<div style="text-align: center; color: #000000;">{ladebotschaften[i % len(ladebotschaften)]}</div>',
-            unsafe_allow_html=True
-        )
+    for botschaft in ladebotschaften:
+        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
         time.sleep(2.5)
 
-    # Ladeanimation & Text verschwinden
-    image_container.empty()
-    text_container.empty()
-
-    st.session_state["scanned"] = True
-    st.experimental_rerun()
-# Hauptausgabe nach Ladevorgang
+# Ergebnisanzeige
 def show_result():
     status = st.session_state["insurance"]
     ticket_number = f"{status}-{random.randint(100000, 999999)}"
@@ -125,25 +111,29 @@ def show_result():
     st.divider()
     st.markdown("### Was brauchst du heute?")
     choice = st.selectbox("Modul auswählen", [
-        "Etwas verstehen",
-        "Etwas fühlen",
-        "Innere Anteile besuchen",
-        "Therapie-Minispiel",
-        "Tagebuch öffnen",
-        "Galgenhumor-Modus"
+        "Etwas verstehen (🔓 bereit)",
+        "Etwas fühlen (🔒 bald)",
+        "Innere Anteile besuchen (🔒 bald)",
+        "Therapie-Minispiel (🔒 bald)",
+        "Tagebuch öffnen (🔓 bereit)",
+        "Galgenhumor-Modus (🔓 bereit)"
     ])
-    if choice == "Tagebuch öffnen":
+
+    if "verstehen" in choice.lower():
+        st.markdown("🧠 Modul: Etwas verstehen\n\n*(Inhalt folgt bald – Ideen willkommen!)*")
+    elif "tagebuch" in choice.lower():
         st.text_area("Was geht gerade in dir vor?", placeholder="Hier ist Raum für alles, was du fühlst...")
-    elif choice == "Galgenhumor-Modus":
+    elif "galgenhumor" in choice.lower():
         st.caption("„Schön, dass du es heute geschafft hast, nicht komplett durchzudrehen. Fortschritt ist relativ.“")
     else:
-        st.markdown(f"Du hast **{choice}** gewählt. Dieses Modul wird bald freigeschaltet.")
+        st.markdown("🔒 Dieses Modul wird bald freigeschaltet. Komm bald wieder vorbei!")
 
-# Steuerung
+# Ablaufsteuerung
 if "insurance" not in st.session_state:
     show_insurance_choice()
 elif not st.session_state.get("scanned", False):
     show_loading_animation()
     st.session_state["scanned"] = True
+    st.experimental_rerun()
 else:
     show_result()
