@@ -80,7 +80,7 @@ else:
     if status == "GKV":
         st.subheader("🪪 Willkommen, Pöbel!")
         st.markdown("""
-<div style="background-color: #e6f7f9; padding: 1em; border-radius: 10px; color: #000000;">
+<div style="background-color: #aeeeee; padding: 1em; border-radius: 10px; color: #000000;">
 <b>🪪 Willkommen, gesetzlich versichert!</b><br>
 Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
 Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
@@ -90,7 +90,7 @@ Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach s
     elif status == "PKV":
         st.subheader("💎 Willkommen, oberer Mittelschichtler!")
         st.markdown("""
-<div style="background-color: #e6f7f9; padding: 1em; border-radius: 10px; color: #000000;">
+<div style="background-color: #aeeeee; padding: 1em; border-radius: 10px; color: #000000;">
 <b>💎 Willkommen, Privatpatient:in!</b><br>
 Du hast jetzt Zugang zu:<br><br>
 – Einzeltherapie mit Designer-Sitzsäcken<br>
