@@ -3,8 +3,50 @@ import streamlit as st
 
 # App-Konfiguration
 st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
-# App-Konfiguration
-st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
+st.markdown("""
+    <style>
+    /* Hintergrundfarbe für die ganze App */
+    body {
+        background-color: #FFF8DC !important;
+    }
+
+    .title {
+        text-align: center;
+        font-size: 2.5em;
+        color: #20B2AA !important;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 40px;
+    }
+
+    /* Button-Design */
+    .stButton button {
+        background-color: #e0cfee;
+        color: #4a148c;
+        border: none;
+        padding: 10px 16px;
+        font-size: 1.1em;
+        border-radius: 10px;
+        margin-top: 10px;
+        transition: 0.3s;
+    }
+
+    .stButton button:hover {
+        background-color: #d1bce2;
+        color: black;
+        transform: scale(1.03);
+    }
+
+    .stAlert {
+        border-radius: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # 🌈 Farbdesign: Hintergrund + Titel
 st.markdown("""
