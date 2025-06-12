@@ -53,38 +53,35 @@ st.markdown("""
 st.markdown('<div class="title">Traumatisierender Taschen-Therapeut</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Bitte scanne deine Versichertenkarte, um zu starten</div>', unsafe_allow_html=True)
 
-# Versicherungs-Auswahl
+# Versicherungswahl
 def show_insurance_choice():
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🪪 Gesetzlich versichert", use_container_width=True):
             st.session_state["insurance"] = "GKV"
-            st.session_state["scanned"] = False
+            st.session_state["loading_done"] = False
     with col2:
         if st.button("💳 Privat versichert", use_container_width=True):
             st.session_state["insurance"] = "PKV"
-            st.session_state["scanned"] = False
+            st.session_state["loading_done"] = False
 
-# Ladeanimation anzeigen (nach Versicherungswahl)
+# Ladeanimation nach Versicherungswahl
 def show_loading_animation():
-    st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_container_width=True)
-
+    st.image("glockenkurve_ladeanimation.gif", caption="", use_container_width=True)
     ladeplatz = st.empty()
     ladebotschaften = [
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
         "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
         "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
-        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung."
+        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
+        "🕳️ Du fällst in die Warteliste… bitte lächeln!"
     ]
-
     for botschaft in ladebotschaften:
-        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
+        ladeplatz.markdown(f'<div style="text-align: center;">{botschaft}</div>', unsafe_allow_html=True)
         time.sleep(2.5)
+    st.session_state["loading_done"] = True
 
-    # Nach Ladephase: Lade-GIF & Text löschen
-    ladeplatz.empty()
-    st.session_state["scanned"] = True
-# Ergebnisanzeige
+# Ergebnisse anzeigen
 def show_result():
     status = st.session_state["insurance"]
     ticket_number = f"{status}-{random.randint(100000, 999999)}"
@@ -92,7 +89,7 @@ def show_result():
     if status == "GKV":
         st.subheader("🪪 Willkommen, Pöbel!")
         st.markdown(f"""
-        <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
+        <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px;">
         <b>🎟️ Ticketnummer: {ticket_number}</b><br><br>
         Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
         Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
@@ -102,7 +99,7 @@ def show_result():
     else:
         st.subheader("💎 Willkommen, oberer Mittelschichtler!")
         st.markdown(f"""
-        <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
+        <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px;">
         <b>🎟️ Ticketnummer: {ticket_number}</b><br><br>
         Du hast jetzt Zugang zu:<br>
         – Einzeltherapie mit Designer-Sitzsäcken<br>
@@ -116,29 +113,25 @@ def show_result():
     st.divider()
     st.markdown("### Was brauchst du heute?")
     choice = st.selectbox("Modul auswählen", [
-        "Etwas verstehen (🔓 bereit)",
-        "Etwas fühlen (🔒 bald)",
-        "Innere Anteile besuchen (🔒 bald)",
-        "Therapie-Minispiel (🔒 bald)",
-        "Tagebuch öffnen (🔓 bereit)",
-        "Galgenhumor-Modus (🔓 bereit)"
+        "Etwas verstehen 🧠",
+        "Etwas fühlen 💓",
+        "Innere Anteile besuchen 🎭",
+        "Therapie-Minispiel 🎮",
+        "Tagebuch öffnen 📓",
+        "Galgenhumor-Modus 🪦"
     ])
 
-    if "verstehen" in choice.lower():
-        st.markdown("🧠 Modul: Etwas verstehen\n\n*(Inhalt folgt bald – Ideen willkommen!)*")
-    elif "tagebuch" in choice.lower():
+    if choice == "Tagebuch öffnen 📓":
         st.text_area("Was geht gerade in dir vor?", placeholder="Hier ist Raum für alles, was du fühlst...")
-    elif "galgenhumor" in choice.lower():
+    elif choice == "Galgenhumor-Modus 🪦":
         st.caption("„Schön, dass du es heute geschafft hast, nicht komplett durchzudrehen. Fortschritt ist relativ.“")
     else:
-        st.markdown("🔒 Dieses Modul wird bald freigeschaltet. Komm bald wieder vorbei!")
+        st.markdown(f"🔒 <i>Das Modul <b>{choice}</b> wird bald freigeschaltet.</i>", unsafe_allow_html=True)
 
 # Ablaufsteuerung
 if "insurance" not in st.session_state:
     show_insurance_choice()
-elif not st.session_state.get("scanned", False):
+elif not st.session_state.get("loading_done", False):
     show_loading_animation()
-    st.session_state["scanned"] = True
-    st.experimental_rerun()
 else:
     show_result()
