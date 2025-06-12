@@ -40,25 +40,30 @@ st.markdown("""
         color: black;
         transform: scale(1.03);
     }
+    .weiter-button {
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+    }
+    .weiter-button button {
+        background-color: #ff6961;
+        color: #ffffff;
+        border: none;
+        padding: 12px 24px;
+        font-size: 1.2em;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    .weiter-button button:hover {
+        background-color: #ff5c5c;
+        transform: scale(1.05);
+    }
     textarea {
         background-color: #e6f7f9 !important;
         color: #000000 !important;
         border-radius: 10px;
         padding: 10px;
-    }
-    .weiter-button button {
-        background-color: #f4c2c2;
-        color: #000000;
-        border: none;
-        padding: 10px 20px;
-        font-size: 1.1em;
-        border-radius: 8px;
-        margin-top: 20px;
-        transition: 0.3s;
-    }
-    .weiter-button button:hover {
-        background-color: #f2b6b6;
-        transform: scale(1.02);
     }
     </style>
 """, unsafe_allow_html=True)
@@ -74,12 +79,14 @@ def show_insurance_choice():
         if st.button("🪪 Gesetzlich versichert", use_container_width=True):
             st.session_state["insurance"] = "GKV"
             st.session_state["scanned"] = False
+            st.session_state["show_tools"] = False
     with col2:
         if st.button("💳 Privat versichert", use_container_width=True):
             st.session_state["insurance"] = "PKV"
             st.session_state["scanned"] = False
+            st.session_state["show_tools"] = False
 
-# Ladeanimation mit Textwechsel
+# Ladeanimation
 def show_loading_animation():
     st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_container_width=True)
     ladeplatz = st.empty()
@@ -87,18 +94,15 @@ def show_loading_animation():
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
         "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
         "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
+        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
     ]
     for botschaft in ladebotschaften:
         ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
-        time.sleep(1.7)
+        time.sleep(1.3)
 
-    st.markdown('</div>', unsafe_allow_html=True)
-    with st.container():
-        st.markdown('<div class="weiter-button">', unsafe_allow_html=True)
-        if st.button("B2.01 besuchen"):
-            st.session_state["scanned"] = True
+    st.session_state["show_button"] = True
 
-# Ergebnis-Anzeige und Tool-Module
+# Tool-Auswahl anzeigen
 def show_result():
     status = st.session_state["insurance"]
     ticket_number = f"{status}-{random.randint(100000, 999999)}"
@@ -150,5 +154,11 @@ if "insurance" not in st.session_state:
     show_insurance_choice()
 elif not st.session_state.get("scanned", False):
     show_loading_animation()
+
+    if st.session_state.get("show_button", False):
+        st.markdown('<div class="weiter-button">', unsafe_allow_html=True)
+        if st.button("B2.01 besuchen"):
+            st.session_state["scanned"] = True
+        st.markdown('</div>', unsafe_allow_html=True)
 else:
     show_result()
