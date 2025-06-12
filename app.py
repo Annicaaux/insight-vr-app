@@ -1,30 +1,28 @@
-# app.py
-import streamlit as st
+#import streamlit as st
 
 # App-Konfiguration
-st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
-# App-Konfiguration
+st.set_page_config(page_title="traumatisierender Taschen-Therapeut", page_icon="🎧", layout="centered")
 
 # 🌈 Farbdesign: Hintergrund + Titel
 st.markdown("""
     <style>
-    html, body, [class*="css"]  {
+    html, body, [data-testid="stAppViewContainer"] {
         font-family: 'Segoe UI', sans-serif;
-        background-color: #FFF8DC;  /* Warmer Hintergrund */
+        background-color: #FFF8DC;
         color: #2c2c2c;
     }
 
     .title {
         text-align: center;
         font-size: 2.5em;
-        color: #20B2AA;  /* Türkis für den Titel */
+        color: #20B2AA;
         margin-bottom: 10px;
     }
 
     .subtitle {
         text-align: center;
         font-size: 1.2em;
-        color: #555;
+        color: #000000;
         margin-bottom: 40px;
     }
 
@@ -51,25 +49,8 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Überschrift & Stil
-st.markdown("""
-    <style>
-    .title {
-        text-align: center;
-        font-size: 2.5em;
-        color: #6a1b9a;
-        margin-bottom: 10px;
-    }
-    .subtitle {
-        text-align: center;
-        font-size: 1.2em;
-        color: #555;
-        margin-bottom: 40px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown('<div class="title">🎧 InSight VR – Dein innerer Kompass</div>', unsafe_allow_html=True)
+# Titel & Untertitel
+st.markdown('<div class="title">Traumatisierender Taschen-Therapeut</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Bitte scanne deine Versichertenkarte, um zu starten</div>', unsafe_allow_html=True)
 
 # Visuelle Auswahl & Witze
@@ -92,11 +73,11 @@ else:
 
     if status == "GKV":
         st.subheader("🪪 Willkommen, gesetzlich versichert!")
-        st.error("**Deine Wartezeit beträgt ca. 6–18 Monate.**\n\nAber hey: Dafür darfst du kostenlos in der Ecke deines psychischen Ausnahmezustands sitzen. Und dein Therapeut sieht dich... irgendwann.")
+        st.error("**Deine Wartezeit beträgt ca. 6–18 Monate.**\n\nAber hey: immerhin reicht die Wartezeit noch nicht aus Psychologie einfach selbst zu studieren.")
         st.caption("Tipp: Wenn du beim Scannen deiner Karte weinst, zählt das bereits als Erstgespräch.")
     elif status == "PKV":
         st.subheader("💎 Willkommen, Privatpatient:in!")
-        st.success("Du hast jetzt Zugang zu:\n\n- Einzeltherapie mit Designer-Sitzsäcken\n- psychoanalytischem Latte Macchiato\n- Notfalltermin innerhalb von 24 Sekunden\n\nWahlweise mit Klangschale oder Ego-Streicheln.")
+        st.success("Du hast jetzt Zugang zu:\n\n- Einzeltherapie mit Designer-Sitzsäcken\n- funktionierender McDonalds Eismaschiene\n- Notfalltermin innerhalb von 24 Sekunden\n\nWahlweise mit vergoldeter Klangschale oder Ego-Streicheln.")
         st.caption("Fun Fact: Dein Therapeut hat deinen Lebenslauf gegoogelt – und dich sofort auf LinkedIn verlinkt.")
 
     st.divider()
