@@ -8,14 +8,14 @@ st.markdown("""
     <style>
     html, body, [class*="css"]  {
         font-family: 'Segoe UI', sans-serif;
-        background-color: #f9f4fb;
+        background-color: #fff5ee;
         color: #2c2c2c;
     }
 
     .title {
         text-align: center;
         font-size: 2.5em;
-        color: #6a1b9a;
+        color: #20b2aa;
         margin-bottom: 10px;
     }
 
