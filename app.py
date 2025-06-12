@@ -25,18 +25,33 @@ st.markdown("""
 st.markdown('<div class="title">🎧 InSight VR – Dein innerer Kompass</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Bitte scanne deine Versichertenkarte, um zu starten</div>', unsafe_allow_html=True)
 
-# Kartenwahl
-status = st.radio("Versicherungsstatus wählen:", ["Gesetzlich versichert", "Privat versichert"])
+# Visuelle Auswahl & Witze
+def show_insurance_choice():
+    col1, col2 = st.columns(2)
 
-# Joke je nach Auswahl
-if status:
+    with col1:
+        if st.button("🪪 Gesetzlich versichert", use_container_width=True):
+            st.session_state["insurance"] = "GKV"
+    with col2:
+        if st.button("💳 Privat versichert", use_container_width=True):
+            st.session_state["insurance"] = "PKV"
+
+# Zeige Auswahl oder Witz je nach Status
+if "insurance" not in st.session_state:
+    st.markdown("## Bitte scanne deine Versichertenkarte:")
+    show_insurance_choice()
+else:
     st.divider()
-    if status == "Gesetzlich versichert":
+    status = st.session_state["insurance"]
+
+    if status == "GKV":
         st.subheader("🪪 Willkommen, gesetzlich versichert!")
-        st.info("Deine Therapie beginnt – sobald ein Platz frei wird. Also… irgendwann zwischen BER-Eröffnung und Auferstehung von Freud.")
-    else:
+        st.error("**Deine Wartezeit beträgt ca. 6–18 Monate.**\n\nAber hey: Dafür darfst du kostenlos in der Ecke deines psychischen Ausnahmezustands sitzen. Und dein Therapeut sieht dich... irgendwann.")
+        st.caption("Tipp: Wenn du beim Scannen deiner Karte weinst, zählt das bereits als Erstgespräch.")
+    elif status == "PKV":
         st.subheader("💎 Willkommen, Privatpatient:in!")
-        st.success("Dein VR-Raum wurde aufgewertet: Jetzt mit goldener Klangschale, Psycho-Butler und Dior-Traumaauflösung™.")
+        st.success("Du hast jetzt Zugang zu:\n\n- Einzeltherapie mit Designer-Sitzsäcken\n- psychoanalytischem Latte Macchiato\n- Notfalltermin innerhalb von 24 Sekunden\n\nWahlweise mit Klangschale oder Ego-Streicheln.")
+        st.caption("Fun Fact: Dein Therapeut hat deinen Lebenslauf gegoogelt – und dich sofort auf LinkedIn verlinkt.")
 
     st.divider()
     st.markdown("### Was brauchst du heute?")
