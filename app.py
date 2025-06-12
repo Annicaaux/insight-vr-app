@@ -3,7 +3,51 @@ import streamlit as st
 
 # App-Konfiguration
 st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
+# 🌈 Custom Styles
+st.markdown("""
+    <style>
+    html, body, [class*="css"]  {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f9f4fb;
+        color: #2c2c2c;
+    }
 
+    .title {
+        text-align: center;
+        font-size: 2.5em;
+        color: #6a1b9a;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 40px;
+    }
+
+    .stButton button {
+        background-color: #e0cfee;
+        color: #4a148c;
+        border: none;
+        padding: 10px 16px;
+        font-size: 1.1em;
+        border-radius: 10px;
+        margin-top: 10px;
+        transition: 0.3s;
+    }
+
+    .stButton button:hover {
+        background-color: #d1bce2;
+        color: black;
+        transform: scale(1.03);
+    }
+
+    .stAlert {
+        border-radius: 10px;
+    }
+    </style>
+""", unsafe_allow_html=True)
 # Überschrift & Stil
 st.markdown("""
     <style>
