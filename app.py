@@ -65,19 +65,23 @@ def show_insurance_choice():
             st.session_state["insurance"] = "PKV"
             st.session_state["scanned"] = False
 
-# Ladeanimation mit Glockenkurve
-def show_loading_animation():
-    st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
-    for text in [
-        "Versicherungsstatus wird analysiert...",
-        "Therapieplätze werden auf Verfügbarkeit geprüft...",
-        "Faxgerät wird aufgewärmt...",
-        "Systemfehler ignoriert...",
-        "Warteliste wird initialisiert..."
-    ]:
-        st.write(text)
-        time.sleep(0.7)
+# Lade-GIF anzeigen
+st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
 
+# Dynamischer Lade-Text
+ladeplatz = st.empty()  # Platzhalter für wechselnden Text
+
+ladebotschaften = [
+    "🧠 Analysiere deine Versichertenzugehörigkeit…",
+    "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
+    "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
+    "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
+    "🕳️ Du fällst in die Warteliste… bitte lächeln!"
+]
+
+for botschaft in ladebotschaften:
+    ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
+    time.sleep(1.5)  # Zeit zwischen den Textwechseln
 # Anzeige nach dem Ladevorgang
 def show_result():
     status = st.session_state["insurance"]
