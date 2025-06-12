@@ -2,54 +2,12 @@
 import streamlit as st
 
 # App-Konfiguration
+st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
+# App-Konfiguration
 st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
-st.markdown("""
-    <style>
-    /* Hintergrundfarbe für den Hauptbereich */
-    .main {
-        background-color: #FFF8DC;
-        padding: 2rem;
-        border-radius: 10px;
-    }
+# App-Konfiguration
+st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
 
-    /* Streamlit-Sidebar und Body */
-    html, body, [data-testid="stAppViewContainer"] {
-        background-color: #FFF8DC;
-    }
-
-    /* Titel */
-    .title {
-        text-align: center;
-        font-size: 2.5em;
-        color: #20B2AA;
-        margin-bottom: 10px;
-    }
-
-    .subtitle {
-        text-align: center;
-        font-size: 1.2em;
-        color: #555;
-        margin-bottom: 40px;
-    }
-
-    .stButton button {
-        background-color: #e0cfee;
-        color: #4a148c;
-        border: none;
-        padding: 10px 16px;
-        font-size: 1.1em;
-        border-radius: 10px;
-        margin-top: 10px;
-        transition: 0.3s;
-    }
-
-    .stButton button:hover {
-        background-color: #d1bce2;
-        color: black;
-        transform: scale(1.03);
-    }
-    </style>
-""", unsafe_allow_html=True)
 # 🌈 Farbdesign: Hintergrund + Titel
 st.markdown("""
     <style>
@@ -96,8 +54,26 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="title">traumatisierender Taschentherapeut</div>', unsafe_allow_html=True)
-st.markdown("## Bitte scanne deine Versichertenkarte:")
+# Überschrift & Stil
+st.markdown("""
+    <style>
+    .title {
+        text-align: center;
+        font-size: 2.5em;
+        color: #6a1b9a;
+        margin-bottom: 10px;
+    }
+    .subtitle {
+        text-align: center;
+        font-size: 1.2em;
+        color: #555;
+        margin-bottom: 40px;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown('<div class="title">🎧 InSight VR – Dein innerer Kompass</div>', unsafe_allow_html=True)
+st.markdown('<div class="subtitle">Bitte scanne deine Versichertenkarte, um zu starten</div>', unsafe_allow_html=True)
 
 # Visuelle Auswahl & Witze
 def show_insurance_choice():
