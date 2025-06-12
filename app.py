@@ -65,9 +65,10 @@ def show_insurance_choice():
             st.session_state["insurance"] = "PKV"
             st.session_state["scanned"] = False
 
-# Ladeanimation
+# Ladeanimation anzeigen (nach Versicherungswahl)
 def show_loading_animation():
-    st.image("glockenkurve_ladeanimation.gif", caption="", use_column_width=True)
+    st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_container_width=True)
+
     ladeplatz = st.empty()
     ladebotschaften = [
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
@@ -75,10 +76,14 @@ def show_loading_animation():
         "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
         "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung."
     ]
+
     for botschaft in ladebotschaften:
         ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
         time.sleep(2.5)
 
+    # Nach Ladephase: Lade-GIF & Text löschen
+    ladeplatz.empty()
+    st.session_state["scanned"] = True
 # Ergebnisanzeige
 def show_result():
     status = st.session_state["insurance"]
