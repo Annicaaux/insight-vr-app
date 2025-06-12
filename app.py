@@ -97,7 +97,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="title">traumatisierender Taschentherapeut</div>', unsafe_allow_html=True)
-st.markdown('<h2 style="color:#000000;">Bitte scanne deine Versichertenkarte:</h2>', unsafe_allow_html=True)
+st.markdown("## Bitte scanne deine Versichertenkarte:")
 
 # Visuelle Auswahl & Witze
 def show_insurance_choice():
