@@ -155,10 +155,11 @@ if "insurance" not in st.session_state:
 elif not st.session_state.get("scanned", False):
     show_loading_animation()
 
-    if st.session_state.get("show_button", False):
+       if st.session_state.get("show_button", False):
         st.markdown('<div class="weiter-button">', unsafe_allow_html=True)
         if st.button("B2.01 besuchen"):
             st.session_state["scanned"] = True
+            st.rerun()  # jetzt offiziell und erlaubt
         st.markdown('</div>', unsafe_allow_html=True)
-else:
+elif st.session_state.get("scanned", False):
     show_result()
