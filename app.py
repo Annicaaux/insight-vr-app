@@ -76,10 +76,16 @@ def show_loading_animation():
         "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
         "🕳️ Du fällst in die Warteliste… bitte lächeln!"
     ]
-    for botschaft in ladebotschaften:
-        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
-        time.sleep(1.5)
 
+    start_time = time.time()
+    i = 0
+    while time.time() - start_time < 10:
+        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{ladebotschaften[i % len(ladebotschaften)]}</div>', unsafe_allow_html=True)
+        i += 1
+        time.sleep(2.5)
+
+    st.session_state["scanned"] = True
+    st.experimental_rerun()  # Automatisch weiter zur Ausgabe
 # Hauptausgabe nach Ladevorgang
 def show_result():
     status = st.session_state["insurance"]
