@@ -69,7 +69,7 @@ if st.session_state.insurance is None:
 
 # Ladeanimation
 if st.session_state.scan_step == 1 and not st.session_state.continue_clicked:
-    st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_container_width=True)
+    st.image("glockenkurve_ladeanimation.gif", use_container_width=True)
     platzhalter = st.empty()
     ladebotschaften = [
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
