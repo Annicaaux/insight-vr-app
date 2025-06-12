@@ -2,11 +2,8 @@
 import streamlit as st
 
 # App-Konfiguration
-st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
-# App-Konfiguration
 st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
 # App-Konfiguration
-st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
 
 # 🌈 Farbdesign: Hintergrund + Titel
 st.markdown("""
@@ -88,7 +85,6 @@ def show_insurance_choice():
 
 # Zeige Auswahl oder Witz je nach Status
 if "insurance" not in st.session_state:
-    st.markdown("## Bitte scanne deine Versichertenkarte:")
     show_insurance_choice()
 else:
     st.divider()
