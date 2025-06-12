@@ -46,6 +46,12 @@ st.markdown("""
     .stAlert {
         border-radius: 10px;
     }
+    textarea {
+    background-color: #e6f7f9 !important;
+    color: #000000 !important;
+    border-radius: 10px;
+    padding: 10px;
+    }
     </style>
 """, unsafe_allow_html=True)
 
