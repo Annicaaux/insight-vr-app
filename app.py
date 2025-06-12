@@ -22,7 +22,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="title">🎧 InSight VR – Dein innerer Kompass</div>', unsafe_allow_html=True)
+st.markdown('<div class="title">traumatisierender Taschentherapeut</div>', unsafe_allow_html=True)
 st.markdown('<div class="subtitle">Bitte scanne deine Versichertenkarte, um zu starten</div>', unsafe_allow_html=True)
 
 # Visuelle Auswahl & Witze
