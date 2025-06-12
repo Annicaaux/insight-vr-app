@@ -73,11 +73,26 @@ else:
 
     if status == "GKV":
         st.subheader("🪪 Willkommen, gesetzlich versichert!")
-        st.error("**Deine Wartezeit beträgt ca. 6–18 Monate.**\n\nAber hey: immerhin reicht die Wartezeit noch nicht aus Psychologie einfach selbst zu studieren.")
+       st.markdown("""
+<div style="background-color: #f8d7da; padding: 1em; border-radius: 10px; color: #000000;">
+<b>🪪 Willkommen, gesetzlich versichert!</b><br>
+Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
+Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
+</div>
+""", unsafe_allow_html=True)
         st.caption("Tipp: Wenn du beim Scannen deiner Karte weinst, zählt das bereits als Erstgespräch.")
     elif status == "PKV":
         st.subheader("💎 Willkommen, Privatpatient:in!")
-        st.success("Du hast jetzt Zugang zu:\n\n- Einzeltherapie mit Designer-Sitzsäcken\n- funktionierender McDonalds Eismaschiene\n- Notfalltermin innerhalb von 24 Sekunden\n\nWahlweise mit vergoldeter Klangschale oder Ego-Streicheln.")
+        st.markdown("""
+<div style="background-color: #d4edda; padding: 1em; border-radius: 10px; color: #000000;">
+<b>💎 Willkommen, Privatpatient:in!</b><br>
+Du hast jetzt Zugang zu:<br><br>
+– Einzeltherapie mit Designer-Sitzsäcken<br>
+– funktionierender McDonalds Eismaschine<br>
+– Notfalltermin innerhalb von 24 Sekunden<br><br>
+Wahlweise mit vergoldeter Klangschale oder Ego-Streicheln.
+</div>
+""", unsafe_allow_html=True)
         st.caption("Fun Fact: Dein Therapeut hat deinen Lebenslauf gegoogelt – und dich sofort auf LinkedIn verlinkt.")
 
     st.divider()
