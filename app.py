@@ -46,11 +46,12 @@ st.markdown("""
     .stAlert {
         border-radius: 10px;
     }
+
     textarea {
-    background-color: #e6f7f9 !important;
-    color: #000000 !important;
-    border-radius: 10px;
-    padding: 10px;
+        background-color: #e6f7f9 !important;
+        color: #000000 !important;
+        border-radius: 10px;
+        padding: 10px;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -80,21 +81,18 @@ else:
     if status == "GKV":
         st.subheader("🪪 Willkommen, Pöbel!")
         st.markdown("""
-st.markdown("""
 <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
-<b> 🪪 Willkommen, Pöbel!</b><br>
+<b>🪪 Willkommen, gesetzlich versichert!</b><br>
 Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
 Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
 </div>
-""", unsafe_allow_html=True)
 """, unsafe_allow_html=True)
         st.caption("Tipp: Wenn du beim Scannen deiner Karte weinst, zählt das bereits als Erstgespräch.")
     elif status == "PKV":
         st.subheader("💎 Willkommen, oberer Mittelschichtler!")
         st.markdown("""
-st.markdown("""
 <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
-<b>💎 Willkommen, obere Mittelschichtler!</b><br>
+<b>💎 Willkommen, Privatpatient:in!</b><br>
 Du hast jetzt Zugang zu:<br><br>
 – Einzeltherapie mit Designer-Sitzsäcken<br>
 – funktionierender McDonalds Eismaschine<br>
