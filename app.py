@@ -157,7 +157,7 @@ elif not st.session_state.get("scanned", False):
 
        if st.session_state.get("show_button", False):
         st.markdown('<div class="weiter-button">', unsafe_allow_html=True)
-        if st.button("B2.01 besuchen"):
+       if st.button("B2.01 besuchen"):
             st.session_state["scanned"] = True
             st.rerun()  # jetzt offiziell und erlaubt
         st.markdown('</div>', unsafe_allow_html=True)
