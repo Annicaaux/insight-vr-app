@@ -73,7 +73,7 @@ else:
 
     if status == "GKV":
         st.subheader("🪪 Willkommen, gesetzlich versichert!")
-       st.markdown("""
+        st.markdown("""
 <div style="background-color: #f8d7da; padding: 1em; border-radius: 10px; color: #000000;">
 <b>🪪 Willkommen, gesetzlich versichert!</b><br>
 Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
