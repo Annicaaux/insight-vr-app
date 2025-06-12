@@ -11,7 +11,7 @@ st.markdown("""
     html, body, [data-testid="stAppViewContainer"] {
         font-family: 'Segoe UI', sans-serif;
         background-color: #FFF8DC;
-        color: #2c2c2c;
+        color: #000000;
     }
     .title {
         text-align: center;
@@ -65,24 +65,22 @@ def show_insurance_choice():
             st.session_state["insurance"] = "PKV"
             st.session_state["scanned"] = False
 
-# Lade-GIF anzeigen
-st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
+# Lade-Animation mit dynamischem Text
+def show_loading_animation():
+    st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
+    ladeplatz = st.empty()
+    ladebotschaften = [
+        "🧠 Analysiere deine Versichertenzugehörigkeit…",
+        "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
+        "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
+        "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
+        "🕳️ Du fällst in die Warteliste… bitte lächeln!"
+    ]
+    for botschaft in ladebotschaften:
+        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
+        time.sleep(1.5)
 
-# Dynamischer Lade-Text
-ladeplatz = st.empty()  # Platzhalter für wechselnden Text
-
-ladebotschaften = [
-    "🧠 Analysiere deine Versichertenzugehörigkeit…",
-    "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
-    "💸 Vergleichst du Leistungen oder nur Leidensdruck?",
-    "🤡 Was kostet eine Sitzung? Deine letzte Hoffnung.",
-    "🕳️ Du fällst in die Warteliste… bitte lächeln!"
-]
-
-for botschaft in ladebotschaften:
-    ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{botschaft}</div>', unsafe_allow_html=True)
-    time.sleep(1.5)  # Zeit zwischen den Textwechseln
-# Anzeige nach dem Ladevorgang
+# Hauptausgabe nach Ladevorgang
 def show_result():
     status = st.session_state["insurance"]
     ticket_number = f"{status}-{random.randint(100000, 999999)}"
@@ -121,7 +119,6 @@ def show_result():
         "Tagebuch öffnen",
         "Galgenhumor-Modus"
     ])
-
     if choice == "Tagebuch öffnen":
         st.text_area("Was geht gerade in dir vor?", placeholder="Hier ist Raum für alles, was du fühlst...")
     elif choice == "Galgenhumor-Modus":
