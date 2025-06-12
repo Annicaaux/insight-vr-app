@@ -1,4 +1,4 @@
-#import streamlit as st
+import streamlit as st
 
 # App-Konfiguration
 st.set_page_config(page_title="traumatisierender Taschen-Therapeut", page_icon="🎧", layout="centered")
