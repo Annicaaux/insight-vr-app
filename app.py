@@ -2,7 +2,7 @@
 import streamlit as st
 
 # App-Konfiguration
-st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
+st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
 
 # Überschrift & Stil
 st.markdown("""
