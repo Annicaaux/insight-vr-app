@@ -82,7 +82,7 @@ else:
         st.markdown("""
 st.markdown("""
 <div style="background-color: #96CDCD; padding: 1em; border-radius: 10px; color: #000000;">
-<b>🪪 Willkommen, Pöbel!</b><br>
+<b> 🪪 Willkommen, Pöbel!</b><br>
 Deine Wartezeit beträgt ca. 6–18 Monate.<br><br>
 Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach selbst zu studieren.
 </div>
