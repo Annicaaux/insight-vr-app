@@ -3,19 +3,22 @@ import streamlit as st
 
 # App-Konfiguration
 st.set_page_config(page_title="Traumatisierender-Taschen-Therapeut", page_icon="🎧", layout="centered")
-# 🌈 Custom Styles
+# App-Konfiguration
+st.set_page_config(page_title="InSight VR", page_icon="🎧", layout="centered")
+
+# 🌈 Farbdesign: Hintergrund + Titel
 st.markdown("""
     <style>
     html, body, [class*="css"]  {
         font-family: 'Segoe UI', sans-serif;
-        background-color: #fff5ee;
+        background-color: #FFF8DC;  /* Warmer Hintergrund */
         color: #2c2c2c;
     }
 
     .title {
         text-align: center;
         font-size: 2.5em;
-        color: #20b2aa;
+        color: #20B2AA;  /* Türkis für den Titel */
         margin-bottom: 10px;
     }
 
@@ -45,23 +48,6 @@ st.markdown("""
 
     .stAlert {
         border-radius: 10px;
-    }
-    </style>
-""", unsafe_allow_html=True)
-# Überschrift & Stil
-st.markdown("""
-    <style>
-    .title {
-        text-align: center;
-        font-size: 2.5em;
-        color: #6a1b9a;
-        margin-bottom: 10px;
-    }
-    .subtitle {
-        text-align: center;
-        font-size: 1.2em;
-        color: #555;
-        margin-bottom: 40px;
     }
     </style>
 """, unsafe_allow_html=True)
