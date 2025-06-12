@@ -72,7 +72,7 @@ else:
     status = st.session_state["insurance"]
 
     if status == "GKV":
-        st.subheader("🪪 Willkommen, gesetzlich versichert!")
+        st.subheader("🪪 Willkommen, Pöbel!")
         st.markdown("""
 <div style="background-color: #f8d7da; padding: 1em; border-radius: 10px; color: #000000;">
 <b>🪪 Willkommen, gesetzlich versichert!</b><br>
@@ -82,7 +82,7 @@ Aber hey: immerhin reicht die Wartezeit noch nicht aus, um Psychologie einfach s
 """, unsafe_allow_html=True)
         st.caption("Tipp: Wenn du beim Scannen deiner Karte weinst, zählt das bereits als Erstgespräch.")
     elif status == "PKV":
-        st.subheader("💎 Willkommen, Privatpatient:in!")
+        st.subheader("💎 Willkommen, oberer Mittelschichtler!")
         st.markdown("""
 <div style="background-color: #d4edda; padding: 1em; border-radius: 10px; color: #000000;">
 <b>💎 Willkommen, Privatpatient:in!</b><br>
