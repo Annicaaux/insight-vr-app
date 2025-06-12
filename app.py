@@ -67,8 +67,11 @@ def show_insurance_choice():
 
 # Lade-Animation mit dynamischem Text
 def show_loading_animation():
-    st.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
-    ladeplatz = st.empty()
+    image_container = st.empty()
+    text_container = st.empty()
+
+    image_container.image("glockenkurve_ladeanimation.gif", caption="Versicherungsstatus wird analysiert...", use_column_width=True)
+
     ladebotschaften = [
         "🧠 Analysiere deine Versichertenzugehörigkeit…",
         "📑 Prüfe Wartezeit im seelischen Wartezimmer…",
@@ -77,15 +80,19 @@ def show_loading_animation():
         "🕳️ Du fällst in die Warteliste… bitte lächeln!"
     ]
 
-    start_time = time.time()
-    i = 0
-    while time.time() - start_time < 10:
-        ladeplatz.markdown(f'<div style="text-align: center; color: #000000;">{ladebotschaften[i % len(ladebotschaften)]}</div>', unsafe_allow_html=True)
-        i += 1
+    for i in range(4):  # 4 Schleifen à 2.5 Sekunden = 10 Sekunden
+        text_container.markdown(
+            f'<div style="text-align: center; color: #000000;">{ladebotschaften[i % len(ladebotschaften)]}</div>',
+            unsafe_allow_html=True
+        )
         time.sleep(2.5)
 
+    # Ladeanimation & Text verschwinden
+    image_container.empty()
+    text_container.empty()
+
     st.session_state["scanned"] = True
-    st.experimental_rerun()  # Automatisch weiter zur Ausgabe
+    st.experimental_rerun()
 # Hauptausgabe nach Ladevorgang
 def show_result():
     status = st.session_state["insurance"]
