@@ -10,6 +10,19 @@ st.set_page_config(
     layout="centered"
 )
 
+# Kompatibilitätsfunktion für verschiedene Streamlit-Versionen
+def rerun_app():
+    """Kompatible Funktion für App-Neustart"""
+    try:
+        st.rerun()
+    except AttributeError:
+        try:
+            st.experimental_rerun()
+        except AttributeError:
+            # Fallback für sehr alte Versionen
+            st.legacy_caching.clear_cache()
+            st.stop()
+
 # Session State initialisieren
 if "insurance" not in st.session_state:
     st.session_state.insurance = None
@@ -97,12 +110,12 @@ if st.session_state.insurance is None:
     with col1:
         if st.button("🪪 Gesetzlich versichert", key="gkv"):
             st.session_state.insurance = "GKV"
-            st.experimental_rerun()
+            rerun_app()
     
     with col2:
         if st.button("💳 Privat versichert", key="pkv"):
             st.session_state.insurance = "PKV"
-            st.experimental_rerun()
+            rerun_app()
 
 elif not st.session_state.loading_done:
     # Ladeanimation
@@ -128,7 +141,7 @@ elif not st.session_state.loading_done:
     
     if st.button("🎟️ Wartezimmer B2.01 betreten"):
         st.session_state.loading_done = True
-        st.experimental_rerun()
+        rerun_app()
 
 else:
     # Hauptbereich
@@ -328,4 +341,4 @@ with st.sidebar:
     if st.button("🔄 Alles zurücksetzen"):
         for key in list(st.session_state.keys()):
             del st.session_state[key]
-        st.experimental_rerun()
+        rerun_app()
