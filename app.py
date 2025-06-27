@@ -350,3 +350,422 @@ def ladeanimation_mit_button():
     if st.button("🎟️ 🚪 Wartezimmer B2.01 betreten", key="enter_therapy"):
         st.session_state.loading_done = True
         rerun_app()
+        # Module-Handler Funktionen
+
+def handle_diary_module():
+    """Erweitetes Tagebuch-Modul"""
+    st.markdown("### 📝 Digitales Seelen-Archiv")
+    
+    tab1, tab2, tab3 = st.tabs(["✍️ Neuer Eintrag", "📚 Meine Einträge", "📊 Stimmungs-Analytics"])
+    
+    with tab1:
+        st.markdown("### 📝 Was bewegt dich heute?")
+        
+        # Erweiterte Stimmungsauswahl
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            st.markdown("**Aktuelle Stimmung:**")
+            mood_options = {
+                "💀": {"name": "Existenzkrise", "value": 1, "color": "#ff6b6b"},
+                "😭": {"name": "Emotional Overload", "value": 2, "color": "#ffa8a8"},
+                "😐": {"name": "Zombie-Modus", "value": 3, "color": "#74b9ff"},
+                "🙂": {"name": "Geht so", "value": 4, "color": "#00cec9"},
+                "✨": {"name": "Überraschend okay", "value": 5, "color": "#00b894"}
+            }
+            
+            selected_mood = None
+            for emoji, data in mood_options.items():
+                if st.button(f"{emoji} {data['name']}", key=f"mood_{emoji}"):
+                    selected_mood = f"{emoji} {data['name']}"
+                    st.session_state.current_mood = data
+        
+        with col2:
+            if hasattr(st.session_state, 'current_mood'):
+                mood_data = st.session_state.current_mood
+                st.markdown(f"""
+                <div style="background: {mood_data['color']}; color: white; padding: 2em; border-radius: 15px; text-align: center;">
+                    <h3>Stimmungs-Level: {mood_data['value']}/5</h3>
+                    <p>Du hast "{mood_data['name']}" gewählt</p>
+                    <div style="background: rgba(255,255,255,0.2); height: 10px; border-radius: 5px; margin: 1em 0;">
+                        <div style="background: white; height: 100%; width: {mood_data['value']*20}%; border-radius: 5px;"></div>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+        
+        st.markdown("---")
+        
+        # Kategorien für Einträge
+        entry_category = st.selectbox(
+            "Was für ein Eintrag wird das?",
+            ["🎭 Allgemeines Chaos", "💼 Arbeitsfrust", "❤️ Beziehungsdrama", 
+             "🏠 Familien-Theater", "🎯 Lebensziele", "🌙 Nächtliche Gedanken",
+             "🎉 Positive Momente", "🤔 Selbstreflexion"]
+        )
+        
+        # Intelligente Prompts basierend auf Kategorie
+        prompts = {
+            "🎭 Allgemeines Chaos": "Was geht gerade in deinem Kopf vor? Lass alles raus...",
+            "💼 Arbeitsfrust": "Was war heute besonders nervig im Job?",
+            "❤️ Beziehungsdrama": "Erzähl von deinen zwischenmenschlichen Abenteuern...",
+            "🏠 Familien-Theater": "Was ist in der Familie los?",
+            "🎯 Lebensziele": "Wo willst du hin? Was beschäftigt dich?",
+            "🌙 Nächtliche Gedanken": "Was hält dich wach oder beschäftigt dich vor dem Schlafen?",
+            "🎉 Positive Momente": "Was war heute schön oder hat dich gefreut?",
+            "🤔 Selbstreflexion": "Was hast du über dich gelernt?"
+        }
+        
+        entry_text = st.text_area(
+            "Deine Gedanken:", 
+            placeholder=prompts.get(entry_category, "Schreib einfach drauf los..."),
+            height=200,
+            help="Hier ist Platz für alles - das Chaos, die Klarheit, die Widersprüche."
+        )
+        
+        # Tags hinzufügen
+        tags = st.text_input(
+            "Tags (durch Komma getrennt):",
+            placeholder="z.B. stress, müde, hoffnung, arbeit",
+            help="Tags helfen dir später beim Wiederfinden ähnlicher Einträge"
+        )
+        
+        if st.button("💾 Eintrag speichern", type="primary") and entry_text:
+            new_entry = {
+                "date": datetime.datetime.now().isoformat(),
+                "mood": selected_mood or "😐 Neutral",
+                "category": entry_category,
+                "text": entry_text,
+                "tags": [tag.strip() for tag in tags.split(",") if tag.strip()],
+                "id": len(st.session_state.diary_entries) + 1,
+                "word_count": len(entry_text.split())
+            }
+            st.session_state.diary_entries.append(new_entry)
+            st.session_state.user_mood_history.append({
+                "date": datetime.datetime.now().isoformat(),
+                "mood_value": getattr(st.session_state, 'current_mood', {}).get('value', 3)
+            })
+            
+            st.success("🎉 Eintrag gespeichert! Deine Gedanken sind jetzt digital unsterblich.")
+            st.balloons()
+            
+            # Statistik Update
+            total_words = sum(entry.get('word_count', 0) for entry in st.session_state.diary_entries)
+            st.info(f"📊 Das waren {len(entry_text.split())} Wörter. Insgesamt hast du schon {total_words} Wörter deiner Seele anvertraut!")
+    
+    with tab2:
+        st.markdown("### 📚 Dein persönliches Seelen-Archiv")
+        
+        if st.session_state.diary_entries:
+            # Filter Optionen
+            col1, col2, col3 = st.columns(3)
+            
+            with col1:
+                all_categories = list(set([entry.get('category', 'Unbekannt') for entry in st.session_state.diary_entries]))
+                selected_categories = st.multiselect("Nach Kategorie filtern:", all_categories, default=all_categories)
+            
+            with col2:
+                all_tags = list(set([tag for entry in st.session_state.diary_entries for tag in entry.get('tags', [])]))
+                if all_tags:
+                    selected_tags = st.multiselect("Nach Tags filtern:", all_tags)
+                else:
+                    selected_tags = []
+            
+            with col3:
+                sort_option = st.selectbox("Sortieren nach:", ["Neueste zuerst", "Älteste zuerst"])
+            
+            # Gefilterte Einträge
+            filtered_entries = [
+                entry for entry in st.session_state.diary_entries
+                if entry.get('category', 'Unbekannt') in selected_categories
+                and (not selected_tags or any(tag in entry.get('tags', []) for tag in selected_tags))
+            ]
+            
+            if sort_option == "Neueste zuerst":
+                filtered_entries = sorted(filtered_entries, key=lambda x: x['date'], reverse=True)
+            else:
+                filtered_entries = sorted(filtered_entries, key=lambda x: x['date'])
+            
+            st.markdown(f"**{len(filtered_entries)} Einträge gefunden**")
+            
+            # Einträge anzeigen
+            for i, entry in enumerate(filtered_entries[:10]):
+                date_str = datetime.datetime.fromisoformat(entry["date"]).strftime("%d.%m.%Y um %H:%M")
+                
+                with st.expander(f"📅 {date_str} | {entry.get('category', 'Unbekannt')} | {entry['mood']}"):
+                    st.markdown(f"**{entry['text'][:100]}{'...' if len(entry['text']) > 100 else ''}**")
+                    
+                    if st.button(f"📖 Vollständig lesen", key=f"read_full_{i}"):
+                        st.markdown(f"""
+                        <div class="diary-entry">
+                            <h4>{entry.get('category', 'Eintrag')} vom {date_str}</h4>
+                            <p><strong>Stimmung:</strong> {entry['mood']}</p>
+                            <p><strong>Text:</strong><br>{entry['text']}</p>
+                            {f"<p><strong>Tags:</strong> {', '.join(entry.get('tags', []))}</p>" if entry.get('tags') else ""}
+                            <p><strong>Wörter:</strong> {entry.get('word_count', 'Unbekannt')}</p>
+                        </div>
+                        """, unsafe_allow_html=True)
+        else:
+            st.info("📝 Noch keine Einträge vorhanden. Zeit, deine erste digitale Seelen-Expedition zu starten!")
+    
+    with tab3:
+        st.markdown("### 📊 Deine Stimmungs-Reise")
+        
+        if st.session_state.diary_entries:
+            # Stimmungsverteilung
+            mood_counts = {}
+            category_counts = {}
+            
+            for entry in st.session_state.diary_entries:
+                mood = entry['mood']
+                category = entry.get('category', 'Unbekannt')
+                mood_counts[mood] = mood_counts.get(mood, 0) + 1
+                category_counts[category] = category_counts.get(category, 0) + 1
+            
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.markdown("**🎭 Stimmungsverteilung:**")
+                for mood, count in mood_counts.items():
+                    percentage = (count / len(st.session_state.diary_entries)) * 100
+                    st.markdown(f"{mood}: {count}x ({percentage:.1f}%)")
+            
+            with col2:
+                st.markdown("**📁 Kategorien-Verteilung:**")
+                for category, count in category_counts.items():
+                    percentage = (count / len(st.session_state.diary_entries)) * 100
+                    st.markdown(f"{category}: {count}x ({percentage:.1f}%)")
+            
+            # Schreibstatistiken
+            total_words = sum(entry.get('word_count', 0) for entry in st.session_state.diary_entries)
+            avg_words = total_words / len(st.session_state.diary_entries) if st.session_state.diary_entries else 0
+            
+            st.markdown("---")
+            st.markdown("### 📈 Deine Schreib-Statistiken")
+            
+            col1, col2, col3, col4 = st.columns(4)
+            col1.metric("Einträge gesamt", len(st.session_state.diary_entries))
+            col2.metric("Wörter gesamt", total_words)
+            col3.metric("⌀ Wörter/Eintrag", f"{avg_words:.0f}")
+            col4.metric("Längster Eintrag", max([entry.get('word_count', 0) for entry in st.session_state.diary_entries]) if st.session_state.diary_entries else 0)
+        else:
+            st.info("📊 Noch keine Daten für Analysen. Schreib ein paar Einträge und komm zurück!")
+
+def handle_humor_module():
+    """Galgenhumor-Modus mit mehr Interaktivität"""
+    st.markdown("### 😅 Therapie durch Sarkasmus")
+    
+    tab1, tab2 = st.tabs(["🎲 Zufallsweisheiten", "🎭 Interaktiver Humor"])
+    
+    with tab1:
+        st.markdown("### 😅 Digitale Weisheiten für die Seele")
+        
+        humor_categories = {
+            "🔥 Sarkastisch": [
+                "Schön, dass du es heute geschafft hast, nicht komplett durchzudrehen. Fortschritt ist relativ.",
+                "Deine Probleme sind einzigartig - genau wie die von 8 Milliarden anderen Menschen.",
+                "Wartezeit ist Therapie-Zeit! Du übst schon mal das Warten auf Besserung.",
+                "Vergiss nicht: Auch Sisyphos hatte schlechte Tage. Aber er hatte wenigstens einen Stein.",
+                "Deine Selbstzweifel sind berechtigt - das ist schon mal ein Fortschritt in der Selbstwahrnehmung.",
+                "Perfektionismus ist der Versuch, den unmöglichen Standard zu erreichen, den niemand verlangt hat.",
+                "Du bist nicht verrückt. Die Welt ist es. Du bemerkst es nur als einer der wenigen."
+            ],
+            "💪 Motivational (aber ehrlich)": [
+                "Du bist stärker als du denkst. Wahrscheinlich. Vielleicht. Hoffen wir es mal.",
+                "Heute ist ein neuer Tag voller neuer Möglichkeiten... zu versagen. Aber auch zu wachsen!",
+                "Remember: Even professional therapists need therapy. Du bist in guter Gesellschaft.",
+                "Jeder Schritt zählt, auch wenn er rückwärts ist - du bewegst dich wenigstens.",
+                "Du machst das Beste aus deiner Situation. Dass das nicht viel ist, ist nicht deine Schuld.",
+                "Authentizität bedeutet, ehrlich über dein Chaos zu sein. Du bist sehr authentisch!",
+                "Du überlebst 100% deiner schlechtesten Tage. Das ist eine beeindruckende Erfolgsquote."
+            ],
+            "🏥 Therapie-Insider": [
+                "Dein Therapeut googelt auch erstmal deine Symptome. Ihr seid quitt.",
+                "50 Minuten Therapie, 10 Minuten Notizen: 'Patient lebt noch. Fortschritt unklar.'",
+                "Therapie ist bezahlte Freundschaft mit professioneller Schweigepflicht.",
+                "Dein Therapeut denkt auch manchmal 'Was zur Hölle mache ich hier?'",
+                "Die beste Therapie ist oft einfach jemand, der zuhört, ohne sofort Lösungen anzubieten.",
+                "Therapieerfolg wird daran gemessen, dass du deine Probleme besser erträgst, nicht dass sie verschwinden."
+            ]
+        }
+        
+        col1, col2 = st.columns([1, 2])
+        
+        with col1:
+            selected_category = st.selectbox(
+                "Wähle deinen Humor-Style:",
+                list(humor_categories.keys())
+            )
+            
+            mood_modifier = st.slider(
+                "Sarkasmus-Level:",
+                1, 10, 5,
+                help="1 = Sanft ironisch, 10 = Brutal ehrlich"
+            )
+        
+        with col2:
+            if st.button("🎲 Neue Weisheit generieren", type="primary"):
+                quotes = humor_categories[selected_category]
+                selected_quote = random.choice(quotes)
+                
+                # Modifiziere Quote basierend auf Sarkasmus-Level
+                if mood_modifier <= 3:
+                    prefix = "💝 Sanfte Erinnerung: "
+                elif mood_modifier <= 7:
+                    prefix = "💭 Kleine Wahrheit: "
+                else:
+                    prefix = "🔥 Harte Realität: "
+                
+                st.markdown(f"""
+                <div class="quote-box">
+                    <h4>{prefix}</h4>
+                    <p style="font-size: 1.2em; margin: 1em 0;">"{selected_quote}"</p>
+                    <div style="text-align: right; opacity: 0.8;">
+                        — Dein digitaler Seelen-Klempner<br>
+                        <small>Sarkasmus-Level: {mood_modifier}/10</small>
+                    </div>
+                </div>
+                """, unsafe_allow_html=True)
+                
+                # Bonus-Features basierend auf Level
+                if mood_modifier >= 8:
+                    st.warning("⚠️ Das war jetzt ziemlich direkt. Brauchst du eine virtuelle Umarmung? 🤗")
+                elif mood_modifier <= 2:
+                    st.info("🌸 Das war jetzt sehr sanft. Du bist heute in liebevoller Stimmung!")
+    
+    with tab2:
+        st.markdown("### 🎭 Interaktiver Sarkasmus-Generator")
+        
+        # Situation eingeben
+        situation = st.text_input(
+            "Beschreib deine aktuelle Situation:",
+            placeholder="z.B. 'Mein Chef nervt', 'Ich bin müde', 'Alles ist zu viel'"
+        )
+        
+        if situation and st.button("🎯 Maßgeschneiderten Kommentar generieren"):
+            # Intelligente Antworten basierend auf Keywords
+            responses = {
+                "chef": [
+                    f"Ah, {situation}? Schockierend! Ein Chef, der nervt. Das ist ja noch nie dagewesen.",
+                    f"'{situation}' - Vielleicht ist dein Chef auch nur ein Mensch mit eigenen Problemen. Aber heute nervt er trotzdem.",
+                    f"Pro-Tipp: Stell dir vor, dein Chef ist ein NPC in deinem Lebensspiel. Macht ihn weniger real, aber nicht weniger nervig."
+                ],
+                "müde": [
+                    f"'{situation}' - Join the club! Müdigkeit ist der neue Normalzustand der Menschheit.",
+                    f"Müde sein ist ein Zeichen dafür, dass du lebst und arbeitest. Oder einfach existierst. Das reicht schon.",
+                    f"Fun Fact: Auch Kaffee wird irgendwann müde. Du bist in guter Gesellschaft."
+                ],
+                "viel": [
+                    f"'{situation}' - Das Leben hat vergessen, dass du nur ein Mensch bist, kein Superheld.",
+                    f"Zu viel ist das neue Normal. Willkommen in der Überforderungs-Gesellschaft!",
+                    f"Plot Twist: 'Zu viel' ist subjektiv. Für eine Ameise wäre dein Tag unmöglich."
+                ]
+            }
+            
+            # Finde passende Kategorie
+            situation_lower = situation.lower()
+            if any(word in situation_lower for word in ["chef", "boss", "arbeit", "job"]):
+                category_responses = responses["chef"]
+            elif any(word in situation_lower for word in ["müde", "erschöpft", "schlaf"]):
+                category_responses = responses["müde"]
+            elif any(word in situation_lower for word in ["viel", "stress", "überfordert", "chaos"]):
+                category_responses = responses["viel"]
+            else:
+                category_responses = [
+                    f"'{situation}' - Klingt herausfordernd! Aber hey, du bist hier und beschreibst es. Das ist schon was.",
+                    f"'{situation}' - Manchmal ist das Leben wie ein schlechter Film, nur dass du nicht gehen kannst.",
+                    f"'{situation}' - Das klingt nach einem typischen Menschlichkeits-Problem. Du bist sehr menschlich!"
+                ]
+            
+            response = random.choice(category_responses)
+            
+            st.markdown(f"""
+            <div class="quote-box">
+                <h4>🎯 Maßgeschneiderter Kommentar:</h4>
+                <p style="font-size: 1.1em;">"{response}"</p>
+                <small>— Dein persönlicher Sarkasmus-Assistent</small>
+            </div>
+            """, unsafe_allow_html=True)
+
+def handle_game_module():
+    """Erweiterte Gamification mit mehr Spielelementen"""
+    st.markdown("### 🎮 Existenzkrise: Das Spiel")
+    st.markdown("*Level up deine mentale Gesundheit mit Style!*")
+    
+    # Aktueller Score und Level
+    level = st.session_state.game_score // 100 + 1
+    progress_in_level = st.session_state.game_score % 100
+    next_level_points = 100 - progress_in_level
+    
+    col1, col2, col3 = st.columns(3)
+    col1.metric("🎯 Aktuelle Punkte", st.session_state.game_score)
+    col2.metric("⭐ Level", level)
+    col3.metric("📈 Bis nächstes Level", next_level_points)
+    
+    # Level Progress Bar
+    st.markdown(f"""
+    <div class="progress-container">
+        <div class="progress-bar" style="width: {progress_in_level}%"></div>
+    </div>
+    <p style="text-align: center; margin-top: 0.5em;">Level {level} Progress: {progress_in_level}/100</p>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("---")
+    
+    # Tägliche Challenges
+    st.markdown("### 🌟 Heute verfügbare Missionen")
+    
+    challenges = {
+        "Anfänger": [
+            {"text": "Steh auf, ohne den Wecker zu verfluchen", "points": 10, "icon": "🌅"},
+            {"text": "Trink ein Glas Wasser (nicht nur Kaffee)", "points": 10, "icon": "💧"},
+            {"text": "Mach das Bett (oder tu wenigstens so)", "points": 15, "icon": "🛏️"},
+            {"text": "Sag 'Danke' zu jemandem", "points": 15, "icon": "🙏"}
+        ],
+        "Fortgeschritten": [
+            {"text": "Geh 15 Minuten spazieren", "points": 25, "icon": "🚶"},
+            {"text": "Ruf einen Freund an (nicht für eine Krise)", "points": 30, "icon": "📞"},
+            {"text": "Mach etwas, was du aufgeschoben hast", "points": 35, "icon": "✅"},
+            {"text": "Meditiere 5 Minuten", "points": 25, "icon": "🧘"}
+        ],
+        "Experte": [
+            {"text": "Geh vor 23 Uhr ins Bett", "points": 40, "icon": "🌙"},
+            {"text": "Koche etwas Gesundes", "points": 45, "icon": "👨‍🍳"},
+            {"text": "Mach Sport (auch 5 Liegestütze zählen)", "points": 50, "icon": "💪"},
+            {"text": "Schreib jemandem eine nette Nachricht", "points": 35, "icon": "💌"}
+        ]
+    }
+    
+    for difficulty, challenge_list in challenges.items():
+        with st.expander(f"🎲 {difficulty}-Missionen", expanded=(difficulty == "Anfänger")):
+            challenge = random.choice(challenge_list)
+            
+            col1, col2 = st.columns([3, 1])
+            
+            with col1:
+                st.markdown(f"""
+                <div style="background: rgba(255,255,255,0.1); padding: 1em; border-radius: 10px; margin: 0.5em 0;">
+                    <h4>{challenge['icon']} {challenge['text']}</h4>
+                    <p>Belohnung: <strong>{challenge['points']} Punkte</strong></p>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            with col2:
+                if st.button("✅ Geschafft!", key=f"{difficulty}_success"):
+                    st.session_state.game_score += challenge["points"]
+                    
+                    # Level-up Check
+                    new_level = st.session_state.game_score // 100 + 1
+                    if new_level > level:
+                        st.balloons()
+                        st.success(f"🎉 LEVEL UP! Du bist jetzt Level {new_level}!")
+                    else:
+                        st.success(f"🌟 +{challenge['points']} Punkte! Gut gemacht!")
+                
+                if st.button("❌ Nicht heute", key=f"{difficulty}_fail"):
+                    encouraging_messages = [
+                        "Auch okay! Morgen ist ein neuer Tag zum Versagen... äh, Versuchen!",
+                        "Kein Problem! Selbsterkenntnis ist auch eine Art von Fortschritt.",
+                        "Ehrlichkeit ist die beste Politik. Auch gegenüber dir selbst!",
+                        "Das Leben ist kein Sprint. Manchmal ist es ein sehr langsamer Spaziergang."
+                    ]
+                    st.info(random.choice(encouraging_messages))
