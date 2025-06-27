@@ -1191,3 +1191,412 @@ def handle_behavior_analysis_module():
                     st.metric("📊 Durchschnittlicher Erfolg", f"{avg_success:.0f}%")
         else:
             st.info("Plane erst alternative Reaktionen!")
+            # Hauptlogik der App
+def main_app_logic():
+    """Hauptlogik basierend auf App-Status"""
+    
+    if st.session_state.insurance is None:
+        # Versicherungsauswahl anzeigen
+        versicherungswahl()
+        
+    elif not st.session_state.loading_done:
+        # Ladeanimation anzeigen
+        ladeanimation_mit_button()
+        
+    else:
+        # Hauptbereich mit Modulen anzeigen
+        zeige_modulbereich()
+
+def zeige_modulbereich():
+    """Hauptbereich mit allen verfügbaren Modulen"""
+    st.markdown('<div class="main-container">', unsafe_allow_html=True)
+    
+    # Begrüßung basierend auf Versicherung
+    status = st.session_state.insurance
+    ticket = f"{status}-{random.randint(100000, 999999)}"
+    
+    # Tageszeit-abhängige Begrüßung
+    current_hour = datetime.datetime.now().hour
+    if current_hour < 12:
+        greeting = "Guten Morgen"
+        mood_comment = "Früh übt sich, was ein Meister werden will!"
+    elif current_hour < 18:
+        greeting = "Guten Tag"
+        mood_comment = "Die Hälfte des Tages ist geschafft!"
+    else:
+        greeting = "Guten Abend"
+        mood_comment = "Zeit für Selbstreflexion und Entspannung."
+    
+    if status == "GKV":
+        st.markdown(f"## 🪪 {greeting}, geschätzter Kassenbeitragszahler!")
+        st.markdown(f"""
+        <div class="info-box">
+            <div style="display: flex; align-items: center; margin-bottom: 1em;">
+                <div style="font-size: 3em; margin-right: 0.5em;">🎟️</div>
+                <div>
+                    <h3 style="margin: 0;">Ticket: {ticket}</h3>
+                    <p style="margin: 0; color: #666;">Öffentlich-rechtliche Seelenheilkunde</p>
+                </div>
+            </div>
+            <p style="margin-top: 1em; font-style: italic;">
+                💡 <strong>Heute:</strong> {mood_comment}<br>
+                Wartezeit: 6-18 Monate (perfekt für Gedulds-Training)
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        st.markdown(f"## 💎 {greeting}, Premium-Leidender!")
+        st.markdown(f"""
+        <div class="info-box">
+            <div style="display: flex; align-items: center; margin-bottom: 1em;">
+                <div style="font-size: 3em; margin-right: 0.5em;">🏆</div>
+                <div>
+                    <h3 style="margin: 0;">VIP-Ticket: {ticket}</h3>
+                    <p style="margin: 0; color: #666;">Exklusive Seelen-Couture</p>
+                </div>
+            </div>
+            <p style="margin-top: 1em; font-style: italic;">
+                💡 <strong>Heute:</strong> {mood_comment}<br>
+                Express-Service: 24-48h Wartezeit
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # Therapie-Fortschritt
+    st.session_state.therapy_points += 1
+    progress = min(st.session_state.therapy_points * 1.5, 100)
+    
+    st.markdown("### 📊 Dein seelischer Entwicklungsstand")
+    col1, col2, col3 = st.columns([2, 1, 1])
+    
+    with col1:
+        st.markdown(f"""
+        <div class="progress-container">
+            <div class="progress-bar" style="width: {progress}%"></div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.metric("Level", st.session_state.therapy_points, delta=1)
+    
+    with col3:
+        next_milestone = ((st.session_state.therapy_points // 10) + 1) * 10
+        remaining = next_milestone - st.session_state.therapy_points
+        st.metric("Bis Level-Up", remaining)
+    
+    # Tägliches Motivations-Zitat
+    motivational_quotes = [
+        "Heute ist ein guter Tag, um nicht komplett durchzudrehen! 🌟",
+        "Du bist stärker als deine stärkste Ausrede. Wahrscheinlich. 💪",
+        "Perfektion ist überbewertet. Chaos ist authentisch! 🎨",
+        "Auch Therapeuten haben Therapeuten. Du bist in guter Gesellschaft! 🤝",
+        "Fortschritt ist Fortschritt, auch wenn er rückwärts ist! 🚀"
+    ]
+    
+    daily_quote = motivational_quotes[datetime.datetime.now().day % len(motivational_quotes)]
+    st.markdown(f"""
+    <div class="quote-box" style="margin: 2em 0;">
+        {daily_quote}
+        <div style="text-align: right; margin-top: 1em; font-size: 0.9em;">
+            — Dein digitaler Seelen-Coach
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.divider()
+    
+    # Module-Auswahl
+    st.markdown("### 🎯 Deine heutige Therapie-Session")
+    st.markdown("*Wähle dein therapeutisches Abenteuer – jedes Modul wurde von Experten entwickelt*")
+    
+    # Module-Daten
+    modules_data = {
+        "📔 Tagebuch öffnen": {
+            "description": "Digitales Seelen-Archiv",
+            "subtitle": "Verwandle deine Gedanken in lesbare Verzweiflung",
+            "color": "linear-gradient(135deg, #667eea, #764ba2)"
+        },
+        "😅 Galgenhumor-Modus": {
+            "description": "Therapie durch Sarkasmus",
+            "subtitle": "Lachen über das Unlachbare",
+            "color": "linear-gradient(135deg, #f093fb, #f5576c)"
+        },
+        "🎮 Therapie-Minispiel": {
+            "description": "Gamification der Existenzkrise",
+            "subtitle": "Level up deine mentale Gesundheit",
+            "color": "linear-gradient(135deg, #4facfe, #00f2fe)"
+        },
+        "💙 Etwas fühlen": {
+            "description": "Emotionsregulation ohne Regulation",
+            "subtitle": "Gefühls-Chaos professionell sortieren",
+            "color": "linear-gradient(135deg, #a8edea, #fed6e3)"
+        },
+        "🧠 Etwas verstehen": {
+            "description": "Kognitive Verhaltenstherapie für Dummies",
+            "subtitle": "Gedanken-Detektiv werden",
+            "color": "linear-gradient(135deg, #ffecd2, #fcb69f)"
+        },
+        "🎭 Innere Anteile besuchen": {
+            "description": "Systemische Familientherapie im Kopf",
+            "subtitle": "Meet & Greet mit deiner inneren WG",
+            "color": "linear-gradient(135deg, #fa709a, #fee140)"
+        },
+        "🔬 Verhaltensanalyse": {
+            "description": "Professionelle SORKC-Analyse",
+            "subtitle": "Verstehe deine Reaktionsmuster wissenschaftlich",
+            "color": "linear-gradient(135deg, #667eea, #764ba2)"
+        }
+    }
+    
+    # Module Grid (3x3 Layout, mittlere Spalte der letzten Reihe für Verhaltensanalyse)
+    row1_cols = st.columns(3)
+    row2_cols = st.columns(3)
+    row3_cols = st.columns([1, 1, 1])
+    
+    all_cols = row1_cols + row2_cols + [row3_cols[1]]  # 7 Module total
+    module_names = list(modules_data.keys())
+    
+    for i, (col, module_name) in enumerate(zip(all_cols, module_names)):
+        module_info = modules_data[module_name]
+        
+        with col:
+            # Module Card
+            card_html = f"""
+            <div class="module-card" style="background: {module_info['color']}; color: white;">
+                <div class="module-icon">{module_name.split()[0]}</div>
+                <h4 style="margin: 0.5em 0; font-size: 1.2em;">{module_name.split(' ', 1)[1] if ' ' in module_name else module_name}</h4>
+                <p style="font-size: 0.9em; opacity: 0.9; margin: 0.5em 0;">{module_info['subtitle']}</p>
+            </div>
+            """
+            st.markdown(card_html, unsafe_allow_html=True)
+            
+            if st.button(f"Starten", key=f"start_{i}", help=f"{module_info['description']}"):
+                st.session_state.current_module = module_name
+                rerun_app()
+    
+    # Modul-Inhalte anzeigen basierend auf Auswahl
+    if st.session_state.current_module:
+        st.markdown("---")
+        module = st.session_state.current_module
+        
+        # Module Header
+        module_info = modules_data[module]
+        st.markdown(f"""
+        <div style="background: {module_info['color']}; color: white; text-align: center; padding: 2em; border-radius: 20px; margin: 2em 0;">
+            <div style="font-size: 4em; margin-bottom: 0.5em;">{module.split()[0]}</div>
+            <h2 style="margin: 0;">{module.split(' ', 1)[1] if ' ' in module else module}</h2>
+            <p style="opacity: 0.9; font-size: 1.1em;">{module_info['subtitle']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Route zu entsprechenden Handlern
+        if "Tagebuch" in module:
+            handle_diary_module()
+        elif "Galgenhumor" in module:
+            handle_humor_module()
+        elif "Minispiel" in module:
+            handle_game_module()
+        elif "fühlen" in module:
+            handle_emotions_module()
+        elif "verstehen" in module:
+            handle_cognitive_module()
+        elif "Anteile" in module:
+            handle_parts_module()
+        elif "Verhaltensanalyse" in module:
+            handle_behavior_analysis_module()
+    
+    st.markdown('</div>', unsafe_allow_html=True)
+
+# Footer
+def show_footer():
+    """Zeigt den Footer mit Disclaimer und Notfall-Kontakten"""
+    st.markdown("---")
+    st.markdown("""
+    <div style="text-align: center; padding: 2em; background: rgba(255,255,255,0.1); border-radius: 15px; margin: 2em 0;">
+        <p style="font-style: italic; margin-bottom: 1em;">
+            *Disclaimer: Diese App ersetzt keine echte Therapie. Bei ernsten Problemen wende dich an professionelle Hilfe! 🏥*
+        </p>
+        <p style="font-size: 0.9em; opacity: 0.8;">
+            <strong>Notfall-Kontakte:</strong><br>
+            Telefonseelsorge: 0800 111 0 111 | Nummer gegen Kummer: 116 123 | Notfall: 112
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+
+# Sidebar
+def show_sidebar():
+    """Zeigt die Sidebar mit Einstellungen und Statistiken"""
+    with st.sidebar:
+        st.markdown("### 🔧 Einstellungen")
+        
+        # Theme Selector
+        theme = st.selectbox("🎨 Theme:", ["Standard", "Dunkel", "Energisch", "Beruhigend"], key="theme_selector")
+        
+        # Stats
+        if (st.session_state.diary_entries or st.session_state.behavior_analyses or 
+            st.session_state.therapy_points > 0):
+            st.markdown("---")
+            st.markdown("📊 **Deine Statistiken:**")
+            
+            if st.session_state.diary_entries:
+                st.markdown(f"• 📔 Tagebuch-Einträge: {len(st.session_state.diary_entries)}")
+            
+            st.markdown(f"• ⭐ Therapie-Punkte: {st.session_state.therapy_points}")
+            st.markdown(f"• 🎮 Game-Score: {st.session_state.game_score}")
+            
+            if st.session_state.behavior_analyses:
+                st.markdown(f"• 🔬 Verhaltensanalysen: {len(st.session_state.behavior_analyses)}")
+            
+            if st.session_state.training_attempts:
+                st.markdown(f"• 🎯 Trainingsversuche: {len(st.session_state.training_attempts)}")
+                
+                # Erfolgsrate berechnen
+                if st.session_state.training_attempts:
+                    avg_success = sum(a['success_rating'] for a in st.session_state.training_attempts) / len(st.session_state.training_attempts)
+                    st.markdown(f"• 📈 ⌀ Erfolgsrate: {avg_success:.0f}%")
+        
+        # Zurück zum Hauptmenü
+        if st.session_state.current_module:
+            st.markdown("---")
+            if st.button("🏠 Zurück zum Hauptmenü", use_container_width=True):
+                st.session_state.current_module = None
+                rerun_app()
+        
+        # Hilfe & Info
+        st.markdown("---")
+        with st.expander("ℹ️ Hilfe & Info"):
+            st.markdown("""
+            **🎯 So funktioniert die App:**
+            
+            1. **Module wählen** - Klicke auf eine Modul-Karte
+            2. **Features nutzen** - Tagebuch schreiben, Spiele spielen
+            3. **Fortschritt verfolgen** - Deine Punkte steigen automatisch
+            4. **Zurück** - Nutze den Zurück-Button für das Hauptmenü
+            
+            **🔬 Verhaltensanalyse:**
+            - Dokumentiere problematische Situationen
+            - Analysiere was hilfreich/nicht hilfreich war
+            - Plane alternative Reaktionen
+            - Trainiere neue Verhaltensweisen
+            
+            **📱 Technische Hinweise:**
+            - Daten werden nur während der Session gespeichert
+            - Bei Seiten-Reload gehen Daten verloren
+            - Für dauerhafte Speicherung nutze den Export
+            """)
+        
+        # Export-Funktion
+        st.markdown("---")
+        if st.button("📥 Daten exportieren"):
+            # Erstelle einen Export der wichtigsten Daten
+            export_data = {
+                "diary_entries": st.session_state.diary_entries,
+                "behavior_analyses": st.session_state.behavior_analyses,
+                "training_attempts": st.session_state.training_attempts,
+                "stats": {
+                    "therapy_points": st.session_state.therapy_points,
+                    "game_score": st.session_state.game_score
+                },
+                "export_date": datetime.datetime.now().isoformat()
+            }
+            
+            json_string = json.dumps(export_data, indent=2, ensure_ascii=False)
+            
+            st.download_button(
+                label="💾 JSON-Export herunterladen",
+                data=json_string,
+                file_name=f"therapie_export_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                mime="application/json"
+            )
+        
+        # Reset mit Bestätigung
+        st.markdown("---")
+        if not st.session_state.confirm_reset:
+            if st.button("🔄 Alles zurücksetzen", use_container_width=True):
+                st.session_state.confirm_reset = True
+                rerun_app()
+        else:
+            st.warning("⚠️ Wirklich alles löschen?")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                if st.button("✅ Ja", type="primary"):
+                    # Alles löschen außer der Bestätigung
+                    keys_to_keep = ["confirm_reset"]
+                    for key in list(st.session_state.keys()):
+                        if key not in keys_to_keep:
+                            del st.session_state[key]
+                    st.session_state.confirm_reset = False
+                    rerun_app()
+            
+            with col2:
+                if st.button("❌ Abbrechen"):
+                    st.session_state.confirm_reset = False
+                    rerun_app()
+
+# Easter Egg
+def show_easter_egg():
+    """Zeigt gelegentliche motivierende Nachrichten"""
+    if st.session_state.therapy_points >= 50:
+        if random.random() < 0.1:  # 10% Chance
+            st.toast("🎉 Du bist auf einem guten Weg! Keep going!", icon="🌟")
+
+# Hauptausführung
+def main():
+    """Hauptfunktion der App"""
+    # Hauptlogik ausführen
+    main_app_logic()
+    
+    # Footer anzeigen
+    show_footer()
+    
+    # Sidebar anzeigen
+    show_sidebar()
+    
+    # Easter Egg prüfen
+    show_easter_egg()
+
+# App starten
+if __name__ == "__main__":
+    main()
+
+# Zusätzliche Hilfsfunktionen für bessere Benutzererfahrung
+def get_user_progress_summary():
+    """Gibt eine Zusammenfassung des Benutzerfortschritts zurück"""
+    summary = {
+        "total_diary_entries": len(st.session_state.diary_entries),
+        "total_behavior_analyses": len(st.session_state.behavior_analyses),
+        "therapy_level": st.session_state.therapy_points // 10 + 1,
+        "game_level": st.session_state.game_score // 100 + 1,
+        "training_attempts": len(st.session_state.training_attempts)
+    }
+    return summary
+
+def calculate_overall_engagement():
+    """Berechnet das Gesamtengagement des Benutzers"""
+    engagement_score = 0
+    
+    # Punkte für verschiedene Aktivitäten
+    engagement_score += len(st.session_state.diary_entries) * 10
+    engagement_score += len(st.session_state.behavior_analyses) * 25
+    engagement_score += len(st.session_state.training_attempts) * 15
+    engagement_score += st.session_state.game_score
+    
+    return engagement_score
+
+# App-weite Konstanten
+APP_VERSION = "1.0.0"
+EMERGENCY_CONTACTS = {
+    "Telefonseelsorge": "0800 111 0 111",
+    "Nummer gegen Kummer": "116 123", 
+    "Notfall": "112"
+}
+
+# Debugging-Hilfsfunktion (nur für Entwicklung)
+def debug_session_state():
+    """Zeigt den aktuellen Session State für Debugging"""
+    if st.checkbox("🔧 Debug Mode (nur für Entwicklung)"):
+        st.json(dict(st.session_state))
+
+# Ausführung
+main()
