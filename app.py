@@ -769,3 +769,425 @@ def handle_game_module():
                         "Das Leben ist kein Sprint. Manchmal ist es ein sehr langsamer Spaziergang."
                     ]
                     st.info(random.choice(encouraging_messages))
+                    def handle_emotions_module():
+    """Emotions-Modul"""
+    st.markdown("### 💙 Gefühls-Check")
+    
+    emotions = st.multiselect(
+        "Wie geht es dir gerade?",
+        ["😢 Traurig", "😰 Ängstlich", "😡 Wütend", "😴 Müde", 
+         "🤗 Einsam", "😖 Überfordert", "😌 Ruhig", "✨ Hoffnungsvoll"]
+    )
+    
+    if emotions:
+        st.markdown("**Deine Gefühlslage:**")
+        for emotion in emotions:
+            intensity = st.slider(f"Wie stark? {emotion}", 1, 10, 5, key=emotion)
+        
+        if st.button("💡 Verstehen"):
+            st.info("Alle Gefühle sind okay! Auch die blöden. 🧠")
+            
+            # Speichere Emotionsdaten
+            emotion_entry = {
+                "timestamp": datetime.datetime.now().isoformat(),
+                "emotions": emotions,
+                "intensities": {emotion: st.session_state[emotion] for emotion in emotions}
+            }
+            st.session_state.user_mood_history.append(emotion_entry)
+
+def handle_cognitive_module():
+    """Kognitives Modul"""
+    st.markdown("### 🧠 Gedanken-Detektiv")
+    
+    thought = st.text_input("Was geht dir durch den Kopf?", 
+                           placeholder="z.B. 'Ich schaffe das nie'")
+    
+    if thought:
+        distortions = st.multiselect(
+            "Welche Denkfallen erkennst du?",
+            ["🔮 Gedankenlesen", "🌍 Katastrophisieren", 
+             "⚫ Schwarz-Weiß-Denken", "🔍 Verallgemeinern",
+             "🎯 Personalisierung", "📊 Emotional Reasoning"]
+        )
+        
+        if st.button("🔍 Realitätscheck"):
+            st.success("Gut! Gedanken sind nicht immer Fakten. 🧠")
+            
+            # Hilfreiche Fragen
+            questions = [
+                "Welche Beweise sprechen DAFÜR?",
+                "Welche Beweise sprechen DAGEGEN?", 
+                "Was würdest du einem Freund in derselben Lage sagen?",
+                "Wie wahrscheinlich ist das wirklich (0-100%)?"
+            ]
+            
+            for question in questions:
+                st.markdown(f"**💭 {question}**")
+                answer = st.text_input(f"Antwort:", key=f"q_{question[:10]}")
+
+def handle_parts_module():
+    """Innere Anteile Modul"""
+    st.markdown("### 🎭 Innere WG-Bewohner")
+    
+    parts = {
+        "👨‍💼 Der Perfektionist": {
+            "description": "Alles muss perfekt sein!",
+            "positive": "Sorgt für Qualität",
+            "shadow": "Kann zu Selbstkritik führen"
+        },
+        "😰 Der Ängstliche": {
+            "description": "Was wenn alles schief geht?",
+            "positive": "Beschützt vor Gefahren", 
+            "shadow": "Kann übervorsichtig machen"
+        },
+        "🎨 Der Kreative": {
+            "description": "Lass uns was Schönes machen!",
+            "positive": "Bringt Freude ins Leben",
+            "shadow": "Kann impulsiv sein"
+        },
+        "😡 Der Wütende": {
+            "description": "Das ist unfair!",
+            "positive": "Setzt Grenzen",
+            "shadow": "Kann verletzend sein"
+        },
+        "👶 Das innere Kind": {
+            "description": "Ich will Spaß haben!",
+            "positive": "Bringt Spontaneität",
+            "shadow": "Kann unreif reagieren"
+        }
+    }
+    
+    selected_part = st.selectbox("Wer meldet sich?", list(parts.keys()))
+    
+    if selected_part:
+        part_info = parts[selected_part]
+        
+        st.markdown(f"""
+        <div class="info-box">
+            <h4>{selected_part}</h4>
+            <p><strong>Sagt:</strong> "{part_info['description']}"</p>
+            <p><strong>Positive Funktion:</strong> {part_info['positive']}</p>
+            <p><strong>Schattenseite:</strong> {part_info['shadow']}</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        response = st.text_area("Was antwortest du diesem Anteil?")
+        
+        if response and st.button("💬 Antworten"):
+            st.success("Dialog gestartet! 🗣️")
+            
+            # Speichere Dialog
+            if "inner_dialogues" not in st.session_state:
+                st.session_state.inner_dialogues = []
+            
+            st.session_state.inner_dialogues.append({
+                "timestamp": datetime.datetime.now().isoformat(),
+                "part": selected_part,
+                "user_response": response
+            })
+
+def handle_behavior_analysis_module():
+    """Verhaltensanalyse-Modul mit vollständigem SORKC"""
+    st.markdown("### 🔬 Verhaltensanalyse (SORKC-Modell)")
+    st.markdown("*Verstehe deine Reaktionsmuster wissenschaftlich*")
+    
+    # Informationsbox über SORKC
+    with st.expander("ℹ️ Was ist eine Verhaltensanalyse?"):
+        st.markdown("""
+        **SORKC-Modell:**
+        - **S**ituation: Was war der Auslöser?
+        - **O**rganismus: Deine Tagesform und Grundeinstellungen  
+        - **R**eaktion: Gedanken, Gefühle, Körper, Verhalten
+        - **K**onsequenzen: Kurzfristige Folgen
+        - **C**onsequences: Langfristige Folgen
+        
+        Ziel: Verstehe deine automatischen Reaktionen und entwickle Alternativen.
+        """)
+    
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📝 Neue Analyse", "📊 Meine Analysen", "🔍 Analysieren", "📋 Planen", "🎯 Trainieren"])
+    
+    with tab1:
+        st.markdown("### 📝 Neue Verhaltensanalyse erstellen")
+        
+        with st.form("behavior_analysis_form"):
+            st.markdown("**📍 SITUATION (Auslöser)**")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                situation_when = st.text_input("Wann?", placeholder="z.B. Heute Morgen, 14:30 Uhr")
+                situation_where = st.text_input("Wo?", placeholder="z.B. Im Büro, zu Hause")
+            
+            with col2:
+                situation_who = st.text_input("Wer war dabei?", placeholder="z.B. Kollegen, Familie, allein")
+                situation_what = st.text_area("Was ist passiert?", height=80)
+            
+            st.markdown("**🧠 ORGANISMUS-VARIABLEN (Deine Verfassung)**")
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                mood_scale = st.slider("Stimmung (0-10)", 0, 10, 5)
+                energy_level = st.selectbox("Energielevel", ["Sehr müde", "Etwas müde", "Normal", "Energetisch", "Sehr energetisch"])
+                stress_level = st.selectbox("Stress-Level", ["Entspannt", "Leicht angespannt", "Gestresst", "Sehr gestresst", "Überwältigt"])
+            
+            with col2:
+                belief_patterns = st.multiselect(
+                    "Aktive Denkmuster:",
+                    ["Perfektionismus", "Katastrophisieren", "Schwarz-Weiß-Denken", 
+                     "Selbstkritik", "Sorgen um andere", "Kontrollbedürfnis"]
+                )
+                other_beliefs = st.text_input("Andere Denkmuster:")
+            
+            st.markdown("**🧩 REAKTIONEN**")
+            
+            # Gedanken
+            thoughts = st.text_area("💭 Gedanken:", height=100)
+            
+            # Gefühle
+            col1, col2 = st.columns(2)
+            with col1:
+                primary_emotions = st.multiselect("💙 Hauptgefühle:", 
+                    ["Angst", "Traurigkeit", "Wut", "Freude", "Scham", "Schuld", "Enttäuschung", "Frustration"])
+            with col2:
+                emotion_intensity = st.slider("Intensität (0-100)", 0, 100, 50)
+            
+            # Körperempfindungen
+            col1, col2 = st.columns(2)
+            with col1:
+                body_sensations = st.multiselect("🫀 Körperliche Reaktionen:",
+                    ["Herzklopfen", "Schwitzen", "Zittern", "Bauchschmerzen", "Kopfschmerzen", "Muskelverspannungen"])
+            with col2:
+                tension_level = st.slider("Anspannung (0-100)", 0, 100, 50)
+            
+            # Verhalten
+            behavior_description = st.text_area("🎭 Beobachtbares Verhalten:", height=100)
+            
+            st.markdown("**⚡ KONSEQUENZEN**")
+            short_term_consequences = st.text_area("🔄 Kurzfristige Konsequenzen (sofort):", height=80)
+            long_term_consequences = st.text_area("📈 Langfristige Folgen (Stunden/Tage):", height=80)
+            
+            # Submit Button
+            submitted = st.form_submit_button("💾 Analyse speichern", type="primary")
+            
+            if submitted and situation_what and thoughts and behavior_description:
+                new_analysis = {
+                    "id": len(st.session_state.behavior_analyses) + 1,
+                    "timestamp": datetime.datetime.now().isoformat(),
+                    "situation": {
+                        "when": situation_when,
+                        "where": situation_where, 
+                        "who": situation_who,
+                        "what": situation_what
+                    },
+                    "organism_variables": {
+                        "mood_scale": mood_scale,
+                        "energy_level": energy_level,
+                        "stress_level": stress_level,
+                        "belief_patterns": belief_patterns,
+                        "other_beliefs": other_beliefs
+                    },
+                    "reactions": {
+                        "thoughts": thoughts,
+                        "emotions": primary_emotions,
+                        "emotion_intensity": emotion_intensity,
+                        "body_sensations": body_sensations,
+                        "tension_level": tension_level,
+                        "behavior": behavior_description
+                    },
+                    "consequences": {
+                        "short_term": short_term_consequences,
+                        "long_term": long_term_consequences
+                    },
+                    "analysis_phase": "documented"
+                }
+                
+                st.session_state.behavior_analyses.append(new_analysis)
+                st.success("🎉 Verhaltensanalyse gespeichert!")
+                st.balloons()
+            elif submitted:
+                st.error("⚠️ Bitte fülle mindestens 'Situation', 'Gedanken' und 'Verhalten' aus.")
+    
+    with tab2:
+        st.markdown("### 📊 Meine Verhaltensanalysen")
+        
+        if st.session_state.behavior_analyses:
+            total_analyses = len(st.session_state.behavior_analyses)
+            analyzed_count = len([a for a in st.session_state.behavior_analyses if a.get('analysis_phase') != 'documented'])
+            
+            col1, col2 = st.columns(2)
+            col1.metric("📝 Gesamt", total_analyses)
+            col2.metric("🔍 Bearbeitet", analyzed_count)
+            
+            st.markdown("**📋 Deine Analysen:**")
+            
+            for analysis in reversed(st.session_state.behavior_analyses):
+                timestamp = datetime.datetime.fromisoformat(analysis['timestamp'])
+                date_str = timestamp.strftime("%d.%m.%Y %H:%M")
+                
+                phase = analysis.get('analysis_phase', 'documented')
+                phase_colors = {'documented': '#74b9ff', 'analyzed': '#fdcb6e', 'planned': '#e17055', 'trained': '#00b894'}
+                phase_names = {'documented': '📝 Dokumentiert', 'analyzed': '🔍 Analysiert', 'planned': '📋 Geplant', 'trained': '🎯 Trainiert'}
+                
+                with st.expander(f"#{analysis['id']} | {date_str} | {analysis['situation']['what'][:50]}..."):
+                    # Status Badge
+                    st.markdown(f"""
+                    <div style="background: {phase_colors.get(phase, '#ddd')}; color: white; padding: 0.5em 1em; border-radius: 20px; display: inline-block; margin-bottom: 1em;">
+                        {phase_names.get(phase, 'Unbekannt')}
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    # Zusammenfassung
+                    st.markdown("**📍 Situation:**")
+                    st.write(f"• {analysis['situation']['what']}")
+                    st.markdown("**🧠 Gedanken:**")
+                    st.write(f"• {analysis['reactions']['thoughts'][:100]}...")
+                    st.markdown("**🎭 Verhalten:**")
+                    st.write(f"• {analysis['reactions']['behavior'][:100]}...")
+        else:
+            st.info("📝 Noch keine Verhaltensanalysen erstellt.")
+    
+    with tab3:
+        st.markdown("### 🔍 Analyse bewerten")
+        
+        if st.session_state.behavior_analyses:
+            # Auswahl einer Analyse
+            analysis_options = []
+            for analysis in st.session_state.behavior_analyses:
+                timestamp = datetime.datetime.fromisoformat(analysis['timestamp'])
+                date_str = timestamp.strftime("%d.%m.%Y")
+                analysis_options.append(f"#{analysis['id']} - {date_str} - {analysis['situation']['what'][:30]}...")
+            
+            if analysis_options:
+                selected_idx = st.selectbox("Welche Analyse bewerten?", range(len(analysis_options)), 
+                                          format_func=lambda x: analysis_options[x])
+                
+                selected_analysis = st.session_state.behavior_analyses[selected_idx]
+                
+                st.markdown("**✅❌ Bewerte deine Reaktionen:**")
+                
+                # Bewertungskategorien
+                categories = ["Gedanken", "Gefühle", "Verhalten", "Kurzfristige Folgen", "Langfristige Folgen"]
+                
+                helpful_ratings = {}
+                for category in categories:
+                    col1, col2, col3 = st.columns([2, 1, 1])
+                    
+                    with col1:
+                        st.markdown(f"**{category}**")
+                    
+                    with col2:
+                        if st.button(f"✅ Hilfreich", key=f"helpful_{category}"):
+                            helpful_ratings[category] = "helpful"
+                            st.success(f"{category} als hilfreich markiert!")
+                    
+                    with col3:
+                        if st.button(f"❌ Weniger hilfreich", key=f"unhelpful_{category}"):
+                            helpful_ratings[category] = "unhelpful"
+                            st.warning(f"{category} als weniger hilfreich markiert!")
+                
+                # Ausstiegspunkte
+                st.markdown("**🚪 Ausstiegspunkte identifizieren:**")
+                exit_points = st.multiselect("Wo hättest du aussteigen können?", 
+                    ["🔔 Frühwarnung", "🧠 Gedanken stoppen", "💙 Gefühle regulieren", 
+                     "🫀 Körper beruhigen", "🎭 Verhalten ändern", "⏸️ Pause einlegen"])
+                
+                if st.button("💾 Bewertung speichern"):
+                    selected_analysis['helpful_aspects'] = helpful_ratings
+                    selected_analysis['exit_points'] = exit_points
+                    selected_analysis['analysis_phase'] = 'analyzed'
+                    st.success("🎯 Analyse bewertet!")
+        else:
+            st.info("Erstelle erst eine Analyse!")
+    
+    with tab4:
+        st.markdown("### 📋 Alternative Reaktionen planen")
+        
+        analyzed_analyses = [a for a in st.session_state.behavior_analyses if a.get('analysis_phase') in ['analyzed', 'planned', 'trained']]
+        
+        if analyzed_analyses:
+            st.markdown("**🔄 Entwickle bessere Alternativen:**")
+            
+            alternative_thoughts = st.text_area("Alternative Gedanken:", 
+                                              placeholder="z.B. 'Ich kann das Schritt für Schritt angehen'")
+            alternative_behavior = st.text_area("Alternatives Verhalten:", 
+                                              placeholder="z.B. 'Tief durchatmen und um Hilfe bitten'")
+            implementation_plan = st.text_area("Umsetzungsplan:",
+                                             placeholder="Wie willst du das konkret üben?")
+            
+            if st.button("💾 Plan speichern") and alternative_thoughts and alternative_behavior:
+                # Speichere bei der letzten analysierten Analyse
+                analyzed_analyses[-1]['planned_alternatives'] = {
+                    "thoughts": alternative_thoughts,
+                    "behavior": alternative_behavior,
+                    "implementation": implementation_plan
+                }
+                analyzed_analyses[-1]['analysis_phase'] = 'planned'
+                
+                st.success("🎯 Alternativen geplant! Bereit für die Umsetzung!")
+                st.balloons()
+        else:
+            st.info("Analysiere erst eine Verhaltensanalyse!")
+    
+    with tab5:
+        st.markdown("### 🎯 Veränderungen trainieren")
+        
+        planned_analyses = [a for a in st.session_state.behavior_analyses if a.get('analysis_phase') in ['planned', 'trained']]
+        
+        if planned_analyses:
+            st.markdown("**📋 Dokumentiere deine Trainingsversuche:**")
+            
+            training_situation = st.text_area("In welcher Situation hast du es versucht?")
+            what_tried = st.text_area("Was hast du ausprobiert?")
+            success_rating = st.slider("Wie gut hat es funktioniert? (0-100%)", 0, 100, 50)
+            
+            what_learned = st.text_area("Was hast du gelernt?", 
+                                      placeholder="z.B. 'Ich brauche mehr Übung' oder 'Es hat besser funktioniert als erwartet'")
+            
+            if st.button("⭐ Trainingsversuch dokumentieren") and training_situation and what_tried:
+                new_attempt = {
+                    "date": datetime.datetime.now().strftime("%d.%m.%Y"),
+                    "situation": training_situation,
+                    "what_tried": what_tried,
+                    "success_rating": success_rating,
+                    "learned": what_learned,
+                    "timestamp": datetime.datetime.now().isoformat()
+                }
+                st.session_state.training_attempts.append(new_attempt)
+                
+                # Update Analysis Phase
+                planned_analyses[-1]['analysis_phase'] = 'trained'
+                
+                st.success("🌟 Trainingsversuch dokumentiert!")
+                st.balloons()
+                
+                # Motivierendes Feedback
+                if success_rating >= 70:
+                    st.success("🎉 Das war ein großer Erfolg!")
+                elif success_rating >= 40:
+                    st.info("👍 Guter Versuch! Jeder Schritt zählt!")
+                else:
+                    st.info("💪 Dranbleiben! Veränderung braucht Zeit!")
+                
+                # Erfolgs-Stern
+                st.markdown("### ⭐ Trainings-Stern erhalten! ⭐")
+            
+            # Bisherige Versuche anzeigen
+            if st.session_state.training_attempts:
+                st.markdown("---")
+                st.markdown("**📈 Deine Trainings-Historie:**")
+                
+                for attempt in reversed(st.session_state.training_attempts[-3:]):
+                    st.markdown(f"""
+                    <div class="diary-entry">
+                        <strong>{attempt['date']}</strong> | Erfolg: {attempt['success_rating']}%<br>
+                        <strong>Situation:</strong> {attempt['situation'][:100]}...<br>
+                        <strong>Versucht:</strong> {attempt['what_tried'][:100]}...<br>
+                        <strong>Gelernt:</strong> {attempt['learned'][:100]}...
+                    </div>
+                    """, unsafe_allow_html=True)
+                
+                # Erfolgsstatistiken
+                if len(st.session_state.training_attempts) >= 2:
+                    avg_success = sum(a['success_rating'] for a in st.session_state.training_attempts) / len(st.session_state.training_attempts)
+                    st.metric("📊 Durchschnittlicher Erfolg", f"{avg_success:.0f}%")
+        else:
+            st.info("Plane erst alternative Reaktionen!")
