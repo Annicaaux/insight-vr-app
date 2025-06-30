@@ -166,7 +166,7 @@ def show_thoughts():
     st.markdown("## 🧠 Gedanken-Check")
     st.info("Dieses Modul wird noch entwickelt...")
 
-# Verhaltensanalyse-Modul (SORKC)
+# Verhaltensanalyse-Modul (SORKC) - korrigierte Version
 def show_behavior_analysis():
     """Zeigt das Verhaltensanalyse-Modul"""
     st.markdown("## 🔬 Verhaltensanalyse (SORKC-Modell)")
@@ -241,13 +241,13 @@ def show_behavior_analysis():
             consequences_short = st.text_area(
                 "Kurzfristige Konsequenzen (Was passierte direkt danach?):",
                 placeholder="z.B. 'Fühlte mich erleichtert', 'Konflikt eskalierte'...",
-                height=60
+                height=70  # Geändert von 60 auf 70
             )
             
             consequences_long = st.text_area(
                 "Langfristige Konsequenzen (Was könnten Folgen sein?):",
                 placeholder="z.B. 'Beziehung belastet', 'Vertrauen verloren'...",
-                height=60
+                height=70  # Geändert von 60 auf 70
             )
             
             st.markdown("### C - Kontingenzen")
@@ -256,7 +256,7 @@ def show_behavior_analysis():
                 ["Einmalig", "Selten", "Gelegentlich", "Häufig", "Täglich"]
             )
             
-            # Submit
+            # Submit Button
             submitted = st.form_submit_button("💾 Analyse speichern", type="primary")
             
             if submitted:
@@ -354,7 +354,6 @@ def show_behavior_analysis():
                     all_emotions.extend(a["reaction"]["emotions"])
                 
                 if all_emotions:
-                    from collections import Counter
                     emotion_counts = Counter(all_emotions)
                     most_common = emotion_counts.most_common(3)
                     
@@ -363,7 +362,6 @@ def show_behavior_analysis():
                 # Durchschnittlicher Stress
                 avg_stress = sum(a["organism"]["stress"] for a in st.session_state.analyses) / len(st.session_state.analyses)
                 st.info(f"**Durchschnittlicher Stress-Level:** {avg_stress:.1f}/10")
-
 def show_stats():
     st.markdown("## 📊 Statistiken")
     total_entries = len(st.session_state.entries)
