@@ -117,15 +117,17 @@ def show_dashboard():
         if st.button("🧠 Gedanken-Check", use_container_width=True):
             st.session_state.page = "thoughts"
             st.rerun()
+            
     
     with col2:
-        if st.button("😄 Humor-Therapie", use_container_width=True):
-            st.session_state.page = "humor"
+         if st.button("🔬 Verhaltensanalyse", use_container_width=True):
+            st.session_state.page = "analysis"
             st.rerun()
             
         if st.button("📊 Statistiken", use_container_width=True):
             st.session_state.page = "stats"
             st.rerun()
+   
 
 # Einfaches Tagebuch-Modul
 def show_diary():
