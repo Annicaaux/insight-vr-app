@@ -216,8 +216,8 @@ def main():
         show_diary()
     elif st.session_state.page == "thoughts":
         show_thoughts()
-    elif st.session_state.page == "humor":
-        show_humor()
+    elif st.session_state.page == "analysis":
+        show_behavior_analysis()
     elif st.session_state.page == "stats":
         show_stats()
     
