@@ -1,5 +1,6 @@
 import streamlit as st
 import datetime
+from collections import Counter
 
 # App-Konfiguration
 st.set_page_config(
