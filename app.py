@@ -123,7 +123,7 @@ def show_dashboard():
          if st.button("🔬 Verhaltensanalyse", use_container_width=True):
             st.session_state.page = "analysis"
             st.rerun()
-            
+              
         if st.button("📊 Statistiken", use_container_width=True):
             st.session_state.page = "stats"
             st.rerun()
