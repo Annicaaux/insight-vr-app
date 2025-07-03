@@ -1058,7 +1058,7 @@ def show_behavior_analysis():
                     with col1:
                         st.markdown("**Häufigste Gefühle:**")
                         for gefuehl, count in top_gefuehle:
-                        st.write(f"{Angst}: {count}")
+                            pass
                             
             def show_premium():
     st.markdown("## ⭐ Premium-Features")
