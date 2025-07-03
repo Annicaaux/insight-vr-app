@@ -21,6 +21,7 @@ def init_session_state():
         st.session_state.page = "home"  # Aktuelle Seite
         st.session_state.insurance = None  # Versicherungsstatus
         st.session_state.entries = []  # Speicher für alle Einträge
+        st.session_state.analyses = []  # Speicher für Verhaltensanalysen  # 
 
 # CSS für grundlegendes Styling
 def load_css():
