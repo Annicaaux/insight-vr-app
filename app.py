@@ -1058,6 +1058,7 @@ def show_behavior_analysis():
                     with col1:
                         st.markdown("**Häufigste Gefühle:**")
                         for gefuehl, count in top_gefuehle:
+                            
             def show_premium():
     st.markdown("## ⭐ Premium-Features")
     st.markdown("### Exklusive Zusatzfunktionen für Privatversicherte")
