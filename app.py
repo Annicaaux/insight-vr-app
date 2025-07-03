@@ -21,7 +21,7 @@ def init_session_state():
         st.session_state.page = "home"  # Aktuelle Seite
         st.session_state.insurance = None  # Versicherungsstatus
         st.session_state.entries = []  # Speicher für alle Einträge
-        st.session_state.analyses = []  # Speicher für Verhaltensanalysen  # 
+        st.session_state.analyses = []  # Speicher für Verhaltensanalysen 
 
 # CSS für grundlegendes Styling
 def load_css():
@@ -174,6 +174,10 @@ def show_thoughts():
 # Verhaltensanalyse-Modul nach SORKC (basierend auf PDF)
 def show_behavior_analysis():
     """Zeigt das erweiterte Verhaltensanalyse-Modul mit 4 Phasen"""
+    # Sicherheitscheck - falls analyses nicht existiert
+    if "analyses" not in st.session_state:
+        st.session_state.analyses = []
+    
     st.markdown("## 🔬 Verhaltensanalyse (SORKC-Modell)")
     
     # Info aus dem PDF
@@ -299,9 +303,15 @@ def show_behavior_analysis():
             )
             
             # Speichern
-            if st.form_submit_button("💾 Phase 1 speichern", type="primary"):
-                if situation and verhalten:
-                    analyse_id = len(st.session_state.analyses) + 1
+            if st.button(f"📄 Export", key=f"export_{analysis['id']}"):
+                text = export_analysis_as_pdf(analysis)
+                st.download_button(
+                    "💾 Diese Analyse herunterladen",
+                    text,
+                    f"analyse_{analysis['id']}_{analysis['date'].strftime('%Y%m%d')}.txt",
+                    "text/plain",
+                    key=f"download_{analysis['id']}"
+             )
                     
                     # Neue Analyse erstellen
                     neue_analyse = {
@@ -653,30 +663,28 @@ def show_behavior_analysis():
                         st.write(f"Trainingseinheiten: {len(trainings)}")
                         st.write(f"Durchschnittlicher Fortschritt: {avg_progress:.0f}%")
                     
-                    # Export-Button für einzelne Analyse
-                    if st.button(f"📥 Analyse #{analyse['id']} exportieren", key=f"export_{analyse['id']}"):
-                        json_str = json.dumps(analyse, default=str, indent=2, ensure_ascii=False)
-                        st.download_button(
-                            "💾 Als JSON herunterladen",
-                            json_str,
-                            f"verhaltensanalyse_{analyse['id']}_{analyse['datum'].strftime('%Y%m%d')}.json",
-                            "application/json",
-                            key=f"download_{analyse['id']}"
-                        )
-            
-            # Gesamt-Export
-            st.markdown("---")
-            if st.button("📥 Alle Analysen exportieren"):
-                export_data = {
-                    "analysen": st.session_state.analyses,
-                    "export_datum": datetime.now().isoformat()
-                }
-                json_str = json.dumps(export_data, default=str, indent=2, ensure_ascii=False)
-                st.download_button(
-                    "💾 Alle als JSON herunterladen",
-                    json_str,
-                    f"alle_verhaltensanalysen_{datetime.now().strftime('%Y%m%d')}.json",
-                    "application/json"
+                    # Statt dem bisherigen Export-Button:
+                    if st.button("📥 Analysen exportieren"):
+                        # Als Text-Datei exportieren (kann als PDF gedruckt werden)
+                        all_analyses_text = "ALLE VERHALTENSANALYSEN\n" + "="*50 + "\n\n"
+    
+                        for analysis in st.session_state.analyses:
+                        all_analyses_text += export_analysis_as_pdf(analysis)
+                        all_analyses_text += "\n" + "-"*50 + "\n\n"
+    
+    st.download_button(
+        "💾 Als Textdatei herunterladen",
+        all_analyses_text,
+        f"verhaltensanalysen_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+        "text/plain"
+    )
+    
+    st.download_button(
+        "💾 Als Textdatei herunterladen",
+        all_analyses_text,
+        f"verhaltensanalysen_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+        "text/plain"
+    )
                 )
         else:
             st.info("Noch keine Analysen vorhanden. Starte mit Phase 1!")
@@ -708,6 +716,45 @@ def load_from_local():
     except:
         return []
         
+def export_analysis_as_pdf(analysis):
+    """Erstellt einen formatierten Text für PDF-Export"""
+    text = f"""
+VERHALTENSANALYSE (SORKC-Modell)
+================================
+Datum: {analysis['date'].strftime('%d.%m.%Y %H:%M')}
+Analyse Nr.: {analysis['id']}
+
+SITUATION
+---------
+{analysis['situation']}
+
+ORGANISMUS (Verfassung)
+----------------------
+Stress-Level: {analysis['organism']['stress']}/10
+Stimmung: {analysis['organism']['mood']}/10
+Energie: {analysis['organism']['energy']}
+Schlafqualität: {analysis['organism']['sleep']}
+
+REAKTION
+--------
+Gedanken:
+{analysis['reaction']['thoughts']}
+
+Gefühle: {', '.join(analysis['reaction']['emotions']) if analysis['reaction']['emotions'] else 'Keine angegeben'}
+Gefühls-Intensität: {analysis['reaction']['emotion_intensity']}/10
+
+Verhalten:
+{analysis['reaction']['behavior']}
+
+KONSEQUENZEN
+------------
+Kurzfristig:
+{analysis['consequences']['short_term']}
+
+Langfristig:
+{analysis['consequences']['long_term']}
+"""
+    return text      
 def show_stats():
     st.markdown("## 📊 Statistiken")
     total_entries = len(st.session_state.entries)
