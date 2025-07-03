@@ -1193,31 +1193,8 @@ def main():
     # Footer immer anzeigen
     show_footer()
 
-if __name__ == "__main__":
-    main()
-                    
-                    with col2:
-                        # Durchschnittswerte
-                        avg_stimmung = sum(a['phase1']['organismus']['stimmung'] for a in st.session_state.analyses) / len(st.session_state.analyses)
-                        avg_intensitaet = sum(a['phase1']['reaktion']['gefuehl_intensitaet'] for a in st.session_state.analyses) / len(st.session_state.analyses)
-                        
-                        st.markdown("**Durchschnittswerte:**")
-                        st.write(f"• Stimmung: {avg_stimmung:.1f}/10")
-                        st.write(f"• Gefühls-Intensität: {avg_intensitaet:.0f}/100")
-                
-                # Trainings-Statistik
-                training_analyses = [a for a in st.session_state.analyses if a.get('phase4')]
-                if training_analyses:
-                    st.markdown("**Training-Statistik:**")
-                    total_trainings = sum(len(a['phase4']) for a in training_analyses)
-                    all_progress = []
-                    for a in training_analyses:
-                        all_progress.extend([t['fortschritt'] for t in a['phase4']])
-                    
-                    if all_progress:
-                        st.write(f"• Trainingseinheiten gesamt: {total_trainings}")
-                        st.write(f"• Durchschnittlicher Erfolg: {sum(all_progress)/len(all_progress):.0f}%")
-                        st.write(f"• Bestes Training: {max(all_progress)}%")
+    if __name__ == "__main__":
+        main()
         
         else:
             st.info("🌟 Noch keine Analysen vorhanden. Starte mit deiner ersten Verhaltensanalyse in Phase 1!")
