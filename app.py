@@ -1397,8 +1397,3 @@ def show_stats():
                 if a['phase1']['reaktion']['gefuehle']:
                     alle_gefuehle.extend([g.split()[1] for g in a['phase1']['reaktion']['gefuehle']])
             
-            if alle_gefuehle:
-                gefuehl_counts = Counter(alle_gefuehle)
-                st.write("Deine häufigsten Gefühle:")
-                for gefuehl, count in gefuehl_counts.most_common(5):
-                    st.write(f"•
