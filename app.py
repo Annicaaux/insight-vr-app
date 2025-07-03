@@ -1195,9 +1195,6 @@ def main():
 
     if __name__ == "__main__":
         main()
-        
-        else:
-            st.info("🌟 Noch keine Analysen vorhanden. Starte mit deiner ersten Verhaltensanalyse in Phase 1!")
 
 # Export-Funktion für Text
 def export_analysis_as_text(analyse):
