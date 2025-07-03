@@ -166,73 +166,6 @@ def show_thoughts():
     st.markdown("## 🧠 Gedanken-Check")
     st.info("Dieses Modul wird noch entwickelt...")
 
-def show_humor():
-    st.markdown("## 😄 Humor-Therapie")
-    st.info("Dieses Modul wird noch entwickelt...")
-
-def show_stats():
-    st.markdown("## 📊 Statistiken")
-    total_entries = len(st.session_state.entries)
-    st.metric("Tagebuch-Einträge", total_entries)
-
-# Sidebar mit Navigation
-def show_sidebar():
-    """Zeigt die Sidebar mit Navigation"""
-    with st.sidebar:
-        st.markdown("### 🧭 Navigation")
-        
-        if st.button("🏠 Hauptmenü", use_container_width=True):
-            st.session_state.page = "dashboard"
-            st.rerun()
-        
-        if st.session_state.insurance:
-            st.markdown("---")
-            st.markdown(f"**Status:** {st.session_state.insurance}")
-            
-            if st.button("🔄 Neu starten", use_container_width=True):
-                # Reset alles
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]
-                st.rerun()
-
-# Hauptfunktion
-def main():
-    # Initialisierung
-    init_session_state()
-    load_css()
-    
-    # Header immer anzeigen
-    show_header()
-    
-    # Sidebar anzeigen (wenn eingeloggt)
-    if st.session_state.insurance:
-        show_sidebar()
-    
-    # Routing - welche Seite anzeigen?
-    if not st.session_state.insurance:
-        show_insurance_selection()
-    elif st.session_state.page == "dashboard":
-        show_dashboard()
-    elif st.session_state.page == "diary":
-        show_diary()
-    elif st.session_state.page == "thoughts":
-        show_thoughts()
-    elif st.session_state.page == "humor":
-        show_humor()
-    elif st.session_state.page == "stats":
-        show_stats()
-    
-    # Footer
-    st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; color: #666;">
-        <em>⚠️ Diese App ersetzt keine professionelle Therapie!</em>
-    </div>
-    """, unsafe_allow_html=True)
-
-if __name__ == "__main__":
-    main()
-
 # Verhaltensanalyse-Modul nach SORKC (basierend auf PDF)
 def show_behavior_analysis():
     """Zeigt das erweiterte Verhaltensanalyse-Modul mit 4 Phasen"""
@@ -769,3 +702,67 @@ def load_from_local():
             return data.get("analyses", [])
     except:
         return []
+
+def show_stats():
+    st.markdown("## 📊 Statistiken")
+    total_entries = len(st.session_state.entries)
+    st.metric("Tagebuch-Einträge", total_entries)
+
+# Sidebar mit Navigation
+def show_sidebar():
+    """Zeigt die Sidebar mit Navigation"""
+    with st.sidebar:
+        st.markdown("### 🧭 Navigation")
+        
+        if st.button("🏠 Hauptmenü", use_container_width=True):
+            st.session_state.page = "dashboard"
+            st.rerun()
+        
+        if st.session_state.insurance:
+            st.markdown("---")
+            st.markdown(f"**Status:** {st.session_state.insurance}")
+            
+            if st.button("🔄 Neu starten", use_container_width=True):
+                # Reset alles
+                for key in list(st.session_state.keys()):
+                    del st.session_state[key]
+                st.rerun()
+
+# Hauptfunktion
+def main():
+    # Initialisierung
+    init_session_state()
+    load_css()
+    
+    # Header immer anzeigen
+    show_header()
+    
+    # Sidebar anzeigen (wenn eingeloggt)
+    if st.session_state.insurance:
+        show_sidebar()
+    
+    # Routing - welche Seite anzeigen?
+    if not st.session_state.insurance:
+        show_insurance_selection()
+    elif st.session_state.page == "dashboard":
+        show_dashboard()
+    elif st.session_state.page == "diary":
+        show_diary()
+    elif st.session_state.page == "thoughts":
+        show_thoughts()
+    elif st.session_state.page == "humor":
+        show_humor()
+    elif st.session_state.page == "stats":
+        show_stats()
+    
+    # Footer
+    st.markdown("---")
+    st.markdown("""
+    <div style="text-align: center; color: #666;">
+        <em>⚠️ Diese App ersetzt keine professionelle Therapie!</em>
+    </div>
+    """, unsafe_allow_html=True)
+
+if __name__ == "__main__":
+    main()
+
