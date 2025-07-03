@@ -1060,9 +1060,6 @@ def show_behavior_analysis():
                         for gefuehl, count in top_gefuehle:
                             pass
                             
-            def show_premium():
-    st.markdown("## ⭐ Premium-Features")
-    st.markdown("### Exklusive Zusatzfunktionen für Privatversicherte")
     
     st.markdown("""
     <div class="info-card premium-card">
