@@ -1,10 +1,8 @@
 import streamlit as st
 import datetime
-from collections import Counter
-
-from collections import Counter
-import json
 from datetime import datetime
+import json
+from collections import Counter
 
 # App-Konfiguration
 st.set_page_config(
@@ -18,42 +16,183 @@ def init_session_state():
     """Initialisiert die wichtigsten Session State Variablen"""
     if "initialized" not in st.session_state:
         st.session_state.initialized = True
-        st.session_state.page = "home"  # Aktuelle Seite
-        st.session_state.insurance = None  # Versicherungsstatus
-        st.session_state.entries = []  # Speicher für alle Einträge
-        st.session_state.analyses = []  # Speicher für Verhaltensanalysen 
+        st.session_state.page = "home"
+        st.session_state.insurance = None
+        st.session_state.entries = []
+        st.session_state.analyses = []
 
-# CSS für grundlegendes Styling
+# CSS für professionelles Styling
 def load_css():
     """Lädt das CSS für die App"""
     st.markdown("""
     <style>
+    /* Hauptfarben */
+    :root {
+        --primary-color: #3498db;
+        --secondary-color: #2c3e50;
+        --success-color: #27ae60;
+        --warning-color: #f39c12;
+        --danger-color: #e74c3c;
+        --light-bg: #f8f9fa;
+        --card-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Header Styling */
     .main-header {
-        background: linear-gradient(90deg, #2c3e50, #3498db);
+        background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
         color: white;
-        padding: 2rem;
-        border-radius: 10px;
+        padding: 2.5rem;
+        border-radius: 15px;
         margin-bottom: 2rem;
         text-align: center;
+        box-shadow: var(--card-shadow);
     }
     
     .main-title {
-        font-size: 2.5rem;
-        font-weight: 600;
+        font-size: 2.8rem;
+        font-weight: 700;
         margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
     }
     
     .subtitle {
-        font-size: 1.1rem;
-        opacity: 0.9;
+        font-size: 1.2rem;
+        opacity: 0.95;
+        font-weight: 300;
     }
     
+    /* Karten Design */
     .info-card {
-        background: #f8f9fa;
+        background: white;
         border: 1px solid #e1e8ed;
-        border-radius: 8px;
+        border-radius: 12px;
         padding: 1.5rem;
         margin: 1rem 0;
+        box-shadow: var(--card-shadow);
+        transition: all 0.3s ease;
+    }
+    
+    .info-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .premium-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .standard-card {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+    }
+    
+    /* Phase Cards */
+    .phase-card {
+        background: white;
+        border-left: 4px solid var(--primary-color);
+        padding: 1rem;
+        margin: 0.5rem 0;
+        border-radius: 0 8px 8px 0;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    .phase-complete {
+        border-left-color: var(--success-color);
+        background: #f0f9ff;
+    }
+    
+    /* Progress Bar */
+    .progress-container {
+        background: #e1e8ed;
+        border-radius: 10px;
+        height: 24px;
+        margin: 1rem 0;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, var(--success-color), #2ecc71);
+        height: 100%;
+        border-radius: 10px;
+        transition: width 0.5s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 600;
+    }
+    
+    /* Status Badges */
+    .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin: 0.25rem;
+    }
+    
+    .badge-success {
+        background: var(--success-color);
+        color: white;
+    }
+    
+    .badge-warning {
+        background: var(--warning-color);
+        color: white;
+    }
+    
+    .badge-info {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    /* Buttons */
+    .stButton > button {
+        border-radius: 8px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: none;
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    /* Form Styling */
+    .stForm {
+        background: var(--light-bg);
+        padding: 1.5rem;
+        border-radius: 12px;
+        box-shadow: var(--card-shadow);
+    }
+    
+    /* Metrics */
+    [data-testid="metric-container"] {
+        background: white;
+        padding: 1rem;
+        border-radius: 8px;
+        box-shadow: var(--card-shadow);
+    }
+    
+    /* Expander */
+    .streamlit-expanderHeader {
+        background: var(--light-bg);
+        border-radius: 8px;
+        font-weight: 500;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 2rem;
+        }
+        
+        .info-card {
+            padding: 1rem;
+        }
     }
     </style>
     """, unsafe_allow_html=True)
@@ -64,22 +203,28 @@ def show_header():
     st.markdown("""
     <div class="main-header">
         <div class="main-title">🧠 Taschen-Therapeut Pro</div>
-        <div class="subtitle">Professionelle Selbsthilfe mit einer Prise Humor</div>
+        <div class="subtitle">Professionelle Selbsthilfe mit wissenschaftlichem Hintergrund</div>
     </div>
     """, unsafe_allow_html=True)
 
 # Versicherungsauswahl
 def show_insurance_selection():
     """Zeigt die Versicherungsauswahl"""
-    st.markdown("### 🏥 Versicherungsauswahl")
+    st.markdown("### 🏥 Willkommen! Bitte wähle deinen Status:")
     
     col1, col2 = st.columns(2)
     
     with col1:
         st.markdown("""
-        <div class="info-card">
-            <h4>🪪 Gesetzlich versichert</h4>
-            <p>Standard-Paket mit Grundfunktionen</p>
+        <div class="info-card standard-card">
+            <h3>🪪 Gesetzlich versichert</h3>
+            <p><strong>Standard-Paket</strong></p>
+            <ul>
+                <li>Alle Basis-Module</li>
+                <li>Verhaltensanalyse</li>
+                <li>Tagebuch-Funktion</li>
+                <li>Export-Funktionen</li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
         
@@ -90,9 +235,15 @@ def show_insurance_selection():
     
     with col2:
         st.markdown("""
-        <div class="info-card">
-            <h4>💳 Privat versichert</h4>
-            <p>Premium-Paket mit allen Features</p>
+        <div class="info-card premium-card">
+            <h3>💳 Privat versichert</h3>
+            <p><strong>Premium-Paket</strong></p>
+            <ul>
+                <li>Alle Standard-Features</li>
+                <li>Erweiterte Analysen</li>
+                <li>Premium-Statistiken</li>
+                <li>Priority Support*</li>
+            </ul>
         </div>
         """, unsafe_allow_html=True)
         
@@ -106,78 +257,74 @@ def show_dashboard():
     """Zeigt das Hauptdashboard"""
     # Status anzeigen
     if st.session_state.insurance == "GKV":
-        st.info("🪪 Status: Gesetzlich versichert")
+        st.markdown("""
+        <div class="info-card">
+            <span class="status-badge badge-info">🪪 Gesetzlich versichert</span>
+            <span style="margin-left: 1rem;">Alle Basis-Features verfügbar</span>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        st.success("💳 Status: Privat versichert - Premium")
+        st.markdown("""
+        <div class="info-card">
+            <span class="status-badge badge-success">💳 Premium-Status</span>
+            <span style="margin-left: 1rem;">Alle Features freigeschaltet</span>
+        </div>
+        """, unsafe_allow_html=True)
     
-    st.markdown("### 🎯 Module")
+    st.markdown("### 🎯 Verfügbare Module")
     
-    # Module in 2 Spalten
-    col1, col2 = st.columns(2)
+    # Module in 3 Spalten
+    col1, col2, col3 = st.columns(3)
     
     with col1:
+        st.markdown('<div class="info-card">', unsafe_allow_html=True)
+        if st.button("🔬 Verhaltensanalyse", use_container_width=True):
+            st.session_state.page = "analysis"
+            st.rerun()
+        st.caption("SORKC-Modell zur Verhaltensanalyse")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<div class="info-card">', unsafe_allow_html=True)
         if st.button("📔 Digitales Tagebuch", use_container_width=True):
             st.session_state.page = "diary"
             st.rerun()
-            
+        st.caption("Strukturierte Selbstreflexion")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown('<div class="info-card">', unsafe_allow_html=True)
         if st.button("🧠 Gedanken-Check", use_container_width=True):
             st.session_state.page = "thoughts"
             st.rerun()
-            
-    
-    with col2:
-         if st.button("🔬 Verhaltensanalyse", use_container_width=True):
-            st.session_state.page = "analysis"
+        st.caption("Kognitive Verzerrungen erkennen")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<div class="info-card">', unsafe_allow_html=True)
+        if st.button("😄 Humor-Therapie", use_container_width=True):
+            st.session_state.page = "humor"
             st.rerun()
-              
-         if st.button("📊 Statistiken", use_container_width=True):
+        st.caption("Heilung durch Humor")
+        st.markdown('</div>', unsafe_allow_html=True)
+    
+    with col3:
+        st.markdown('<div class="info-card">', unsafe_allow_html=True)
+        if st.button("📊 Statistiken", use_container_width=True):
             st.session_state.page = "stats"
             st.rerun()
-   
-
-# Einfaches Tagebuch-Modul
-def show_diary():
-    """Zeigt das Tagebuch-Modul"""
-    st.markdown("## 📔 Digitales Tagebuch")
-    
-    # Neuer Eintrag
-    with st.form("diary_entry"):
-        mood = st.selectbox(
-            "Wie fühlst du dich?",
-            ["😊 Gut", "😐 Neutral", "😔 Schlecht"]
-        )
+        st.caption("Deine Fortschritte im Überblick")
+        st.markdown('</div>', unsafe_allow_html=True)
         
-        entry = st.text_area("Was beschäftigt dich heute?", height=150)
-        
-        if st.form_submit_button("Speichern"):
-            if entry:
-                new_entry = {
-                    "date": datetime.datetime.now(),
-                    "mood": mood,
-                    "text": entry
-                }
-                st.session_state.entries.append(new_entry)
-                st.success("✅ Eintrag gespeichert!")
-
-    # Letzte Einträge anzeigen
-    if st.session_state.entries:
-        st.markdown("### 📚 Letzte Einträge")
-        for entry in reversed(st.session_state.entries[-3:]):
-            with st.expander(f"{entry['mood']} - {entry['date'].strftime('%d.%m.%Y %H:%M')}"):
-                st.write(entry['text'])
-
-# Placeholder für andere Module
-def show_thoughts():
-    st.markdown("## 🧠 Gedanken-Check")
-    st.info("Dieses Modul wird noch entwickelt...")
+        if st.session_state.insurance == "PKV":
+            st.markdown('<div class="info-card premium-card">', unsafe_allow_html=True)
+            if st.button("⭐ Premium-Features", use_container_width=True):
+                st.session_state.page = "premium"
+                st.rerun()
+            st.caption("Exklusive Zusatzfunktionen")
+            st.markdown('</div>', unsafe_allow_html=True)
 
 # Verhaltensanalyse-Modul nach SORKC (basierend auf PDF)
 def show_behavior_analysis():
     """Zeigt das erweiterte Verhaltensanalyse-Modul mit 4 Phasen"""
-    # Sicherheitscheck - falls analyses nicht existiert
-    if "analyses" not in st.session_state:
-        st.session_state.analyses = []
-    
     st.markdown("## 🔬 Verhaltensanalyse (SORKC-Modell)")
     
     # Info aus dem PDF
@@ -303,18 +450,12 @@ def show_behavior_analysis():
             )
             
             # Speichern
-            if st.button(f"📄 Export", key=f"export_{analysis['id']}"):
-                text = export_analysis_as_pdf(analysis)
-                st.download_button(
-                    "💾 Diese Analyse herunterladen",
-                    text,
-                    f"analyse_{analysis['id']}_{analysis['date'].strftime('%Y%m%d')}.txt",
-                    "text/plain",
-                    key=f"download_{analysis['id']}"
-             )
+            if st.form_submit_button("💾 Phase 1 speichern", type="primary"):
+                if situation and verhalten:
+                    analyse_id = len(st.session_state.analyses) + 1
                     
                     # Neue Analyse erstellen
-                        neue_analyse = {
+                    neue_analyse = {
                         "id": analyse_id,
                         "datum": datetime.now(),
                         "phase1": {
@@ -663,28 +804,30 @@ def show_behavior_analysis():
                         st.write(f"Trainingseinheiten: {len(trainings)}")
                         st.write(f"Durchschnittlicher Fortschritt: {avg_progress:.0f}%")
                     
-                    # Statt dem bisherigen Export-Button:
-                    if st.button("📥 Analysen exportieren"):
-                        # Als Text-Datei exportieren (kann als PDF gedruckt werden)
-                        all_analyses_text = "ALLE VERHALTENSANALYSEN\n" + "="*50 + "\n\n"
-    
-                        for analysis in st.session_state.analyses:
-                        all_analyses_text += export_analysis_as_pdf(analysis)
-                        all_analyses_text += "\n" + "-"*50 + "\n\n"
-    
-    st.download_button(
-        "💾 Als Textdatei herunterladen",
-        all_analyses_text,
-        f"verhaltensanalysen_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-        "text/plain"
-    )
-    
-    st.download_button(
-        "💾 Als Textdatei herunterladen",
-        all_analyses_text,
-        f"verhaltensanalysen_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-        "text/plain"
-    )
+                    # Export-Button für einzelne Analyse
+                    if st.button(f"📥 Analyse #{analyse['id']} exportieren", key=f"export_{analyse['id']}"):
+                        json_str = json.dumps(analyse, default=str, indent=2, ensure_ascii=False)
+                        st.download_button(
+                            "💾 Als JSON herunterladen",
+                            json_str,
+                            f"verhaltensanalyse_{analyse['id']}_{analyse['datum'].strftime('%Y%m%d')}.json",
+                            "application/json",
+                            key=f"download_{analyse['id']}"
+                        )
+            
+            # Gesamt-Export
+            st.markdown("---")
+            if st.button("📥 Alle Analysen exportieren"):
+                export_data = {
+                    "analysen": st.session_state.analyses,
+                    "export_datum": datetime.now().isoformat()
+                }
+                json_str = json.dumps(export_data, default=str, indent=2, ensure_ascii=False)
+                st.download_button(
+                    "💾 Alle als JSON herunterladen",
+                    json_str,
+                    f"alle_verhaltensanalysen_{datetime.now().strftime('%Y%m%d')}.json",
+                    "application/json"
                 )
         else:
             st.info("Noch keine Analysen vorhanden. Starte mit Phase 1!")
@@ -715,105 +858,3 @@ def load_from_local():
             return data.get("analyses", [])
     except:
         return []
-        
-def export_analysis_as_pdf(analysis):
-    """Erstellt einen formatierten Text für PDF-Export"""
-    text = f"""
-VERHALTENSANALYSE (SORKC-Modell)
-================================
-Datum: {analysis['date'].strftime('%d.%m.%Y %H:%M')}
-Analyse Nr.: {analysis['id']}
-
-SITUATION
----------
-{analysis['situation']}
-
-ORGANISMUS (Verfassung)
-----------------------
-Stress-Level: {analysis['organism']['stress']}/10
-Stimmung: {analysis['organism']['mood']}/10
-Energie: {analysis['organism']['energy']}
-Schlafqualität: {analysis['organism']['sleep']}
-
-REAKTION
---------
-Gedanken:
-{analysis['reaction']['thoughts']}
-
-Gefühle: {', '.join(analysis['reaction']['emotions']) if analysis['reaction']['emotions'] else 'Keine angegeben'}
-Gefühls-Intensität: {analysis['reaction']['emotion_intensity']}/10
-
-Verhalten:
-{analysis['reaction']['behavior']}
-
-KONSEQUENZEN
-------------
-Kurzfristig:
-{analysis['consequences']['short_term']}
-
-Langfristig:
-{analysis['consequences']['long_term']}
-"""
-    return text      
-def show_stats():
-    st.markdown("## 📊 Statistiken")
-    total_entries = len(st.session_state.entries)
-    st.metric("Tagebuch-Einträge", total_entries)
-
-# Sidebar mit Navigation
-def show_sidebar():
-    """Zeigt die Sidebar mit Navigation"""
-    with st.sidebar:
-        st.markdown("### 🧭 Navigation")
-        
-        if st.button("🏠 Hauptmenü", use_container_width=True):
-            st.session_state.page = "dashboard"
-            st.rerun()
-        
-        if st.session_state.insurance:
-            st.markdown("---")
-            st.markdown(f"**Status:** {st.session_state.insurance}")
-            
-            if st.button("🔄 Neu starten", use_container_width=True):
-                # Reset alles
-                for key in list(st.session_state.keys()):
-                    del st.session_state[key]
-                st.rerun()
-
-# Hauptfunktion
-def main():
-    # Initialisierung
-    init_session_state()
-    load_css()
-    
-    # Header immer anzeigen
-    show_header()
-    
-    # Sidebar anzeigen (wenn eingeloggt)
-    if st.session_state.insurance:
-        show_sidebar()
-    
-    # Routing - welche Seite anzeigen?
-    if not st.session_state.insurance:
-        show_insurance_selection()
-    elif st.session_state.page == "dashboard":
-        show_dashboard()
-    elif st.session_state.page == "diary":
-        show_diary()
-    elif st.session_state.page == "thoughts":
-        show_thoughts()
-    elif st.session_state.page == "analysis":
-        show_behavior_analysis()
-    elif st.session_state.page == "stats":
-        show_stats()
-    
-    # Footer
-    st.markdown("---")
-    st.markdown("""
-    <div style="text-align: center; color: #666;">
-        <em>⚠️ Diese App ersetzt keine professionelle Therapie!</em>
-    </div>
-    """, unsafe_allow_html=True)
-
-if __name__ == "__main__":
-    main()
