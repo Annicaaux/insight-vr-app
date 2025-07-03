@@ -314,7 +314,7 @@ def show_behavior_analysis():
              )
                     
                     # Neue Analyse erstellen
-                    neue_analyse = {
+                        neue_analyse = {
                         "id": analyse_id,
                         "datum": datetime.now(),
                         "phase1": {
